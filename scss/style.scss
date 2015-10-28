@@ -73,22 +73,53 @@ img {
 
 
 #homeView {
-    h1 {
-        text-align: center;
-        margin: 40px;
-    }
+    div#titleBar{
+        height: 1000px;
+        background-color: khaki;
+        position: fixed;
+        top:0;
+        left:0;
+        width:100%;
 
-    input {
-        text-align: center;
-    }
-
-    div{
-        font-size: 20px;
-        div {
-            border: dashed;
-            padding: 2px;
+        h1 {
             text-align: center;
-            margin: 15px;
+            transform: translateY(550%);
+            font-family: 'Oleo Script', cursive;
+        }
+    }
+
+    div#eventContent{
+        margin-top: 1000px;
+        position: relative;
+        background-color: lightblue;
+        text-align: center;
+
+        div#navButtons{
+            background-color: black;
+            color:white;
+
+            div{
+                display: inline-block;
+
+                h5{
+                    color:white;
+                }
+            }
+        }
+
+        input {
+            width: 60%;
+            height:50px;
+        }
+
+        div{
+            font-size: 20px;
+            div {
+                border: dashed;
+                padding: 2px;
+                text-align: center;
+                margin: 15px;
+            }
         }
     }
 }

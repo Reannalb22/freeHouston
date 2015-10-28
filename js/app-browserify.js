@@ -35,9 +35,14 @@ var HomeView = React.createClass({
 console.log(this.props.events)
 		return (
 			<div id="homeView">
-				<TitleBar />
-				<SearchBar />
-				<ListEvents events = {this.props.events} />
+				<div id="titleBar">
+					<TitleBar />
+				</div>
+				<div id="eventContent">
+					<NavBar />
+					<SearchBar />
+					<ListEvents events = {this.props.events} />
+				</div>
 			</div>
 		)
 	}
@@ -47,7 +52,22 @@ console.log(this.props.events)
 var TitleBar = React.createClass({
 	render: function(){
 		return(
-			<h1> Houston Free Events </h1>
+			<h1> Free Houston Events </h1>
+		)
+	}
+})
+
+var NavBar = React.createClass({
+	render: function(){
+		return(
+			<div id="navButtons">
+				<div>
+					<h5>About</h5>
+				</div>
+				<div>
+					<h5>Log In</h5>
+				</div>
+			</div>
 		)
 	}
 })
@@ -63,7 +83,7 @@ var SearchBar = React.createClass({
 
 	render: function(){
 		return(
-			<input type="text" placeholder="Search Events i.e. tonight, tomorrow, this weekend" onKeyDown = {this._searchHandler} />
+			<input type="text" placeholder="Search Events i.e. tomorrow, this_weekend" onKeyDown = {this._searchHandler} />
 		)
 	}
 })
