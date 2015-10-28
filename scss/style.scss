@@ -73,17 +73,37 @@ img {
 
 
 #homeView {
+      
+    div#navButtons{
+        background-color: black;
+        color:white;
+        height: 60px;
+        position: fixed;
+        left:0px;
+        top:0px;
+        width: 100%;
+        text-align: right;
+
+        div{
+            display: inline-block;
+
+            h5{
+                color:white;
+            }
+        }
+    }
+
     div#titleBar{
         height: 1000px;
         background-color: khaki;
         position: fixed;
-        top:0;
+        top:60px;
         left:0;
         width:100%;
 
         h1 {
             text-align: center;
-            transform: translateY(550%);
+            transform: translateY(520%);
             font-family: 'Oleo Script', cursive;
         }
     }
@@ -93,19 +113,6 @@ img {
         position: relative;
         background-color: lightblue;
         text-align: center;
-
-        div#navButtons{
-            background-color: black;
-            color:white;
-
-            div{
-                display: inline-block;
-
-                h5{
-                    color:white;
-                }
-            }
-        }
 
         input {
             width: 60%;

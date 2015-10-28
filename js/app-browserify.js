@@ -35,11 +35,11 @@ var HomeView = React.createClass({
 console.log(this.props.events)
 		return (
 			<div id="homeView">
+				<NavBar />
 				<div id="titleBar">
 					<TitleBar />
 				</div>
 				<div id="eventContent">
-					<NavBar />
 					<SearchBar />
 					<ListEvents events = {this.props.events} />
 				</div>
@@ -62,10 +62,7 @@ var NavBar = React.createClass({
 		return(
 			<div id="navButtons">
 				<div>
-					<h5>About</h5>
-				</div>
-				<div>
-					<h5>Log In</h5>
+					<div>button goes here</div>
 				</div>
 			</div>
 		)
