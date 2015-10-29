@@ -83,6 +83,34 @@ img {
         top:0px;
         width: 100%;
         text-align: right;
+        z-index: 2;
+            div{
+
+                input{
+                    width: 65px;
+                    height:65px;
+                    -webkit-appearance: none;
+                    background-color: cadetblue;
+                }
+                ul#dropdown-menu{
+                    list-style: none;
+                    position: relative;
+                    opacity: 0;
+                        li {
+                            text-align: center;
+                            border: 2px solid black;
+                        }
+                    z-index: 99;
+
+                }
+                input:checked + ul#dropdown-menu {
+                    background-color:cadetblue;
+                    z-index: 2;
+                    opacity: 1;
+                    height: 150px;
+                    margin-top: -14px;
+                }
+            }
 
         div{
             display: inline-block;
@@ -103,15 +131,16 @@ img {
 
         h1 {
             text-align: center;
-            transform: translateY(520%);
+            transform: translateY(200%);
             font-family: 'Oleo Script', cursive;
+            font-size: 85px;
         }
     }
 
     div#eventContent{
         margin-top: 1000px;
         position: relative;
-        background-color: lightblue;
+        background-color: cadetblue;
         text-align: center;
 
         input {
