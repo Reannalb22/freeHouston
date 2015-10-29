@@ -62,7 +62,13 @@ var NavBar = React.createClass({
 		return(
 			<div id="navButtons">
 				<div>
-					<div>button goes here</div>
+					<input type = "checkbox" id = "dropButton"></input>
+					<ul id="dropdown-menu">
+				      <li role="presentation"><a href="#about">About</a></li>
+				      <li role="presentation"><a href="#createEvent">Create Event</a></li>
+				      <li role="presentation"><a href="#login">Log In</a></li>
+				      <li role="presentation"><a href="#logout">Log Out</a></li>
+				    </ul>
 				</div>
 			</div>
 		)
@@ -111,9 +117,38 @@ console.log(events)
 	}
 })
 
+var AboutView = React.createClass({
+	render: function(){
+		return (
+			<div>
+				<h3>About</h3>
+				<p>	Free Houston Events is where Houstonians go to find what's happening in Houston, for free. 
+				</p>
+				<p>	If you're a company, venue, bar theater, non-profit or individual, sign up to post all of your free events here. 
+				</p>
+				<p>	Get noticed, and get yourself out there, Houston!
+				</p>
+			</div>
+		)
+	}
+})
+
+var LoginView = React.createClass({
+	render: function(){
+		return(
+			<div>
+				<p>username<input type="text"></input></p>
+				<p>password<input type="text"></input></p>
+			</div>
+		)
+	}
+})
+
 
 var freeRouter = Backbone.Router.extend({
 	routes: {
+		'login': 'getLogin',
+		'about': 'getAbout',
 		'search/:keywords': 'showSearch',
 		'home':'getHome'
 	},
@@ -156,6 +191,16 @@ var freeRouter = Backbone.Router.extend({
 		var self = this
 		var deferredObj = this.getSearch(keyword)
 		deferredObj.done(boundRender)
+	},
+
+	getAbout: function(){
+		ReactDOM.render(<AboutView />,
+			document.querySelector('#container'))
+	},
+
+	getLogin: function(){
+		ReactDOM.render(<LoginView />,
+			document.querySelector('#container'))
 	},
 
 	renderApp: function(){
