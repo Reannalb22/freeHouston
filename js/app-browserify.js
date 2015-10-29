@@ -8,6 +8,11 @@ var $ = require('jquery'),
 	React = require('react'),
 	ReactDOM = require('react-dom')
 	// Parse = require('parse')
+// var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+import ReactCSSTransitionReplace from 'react-css-transition-replace';
+
+
+// var APP_ID: e7jWEAOxt9YSki1VgZJU5OMGsWWDphm7ZRMbgTYS,
 
 
 var freeCollection = Backbone.Collection.extend({
@@ -15,7 +20,7 @@ var freeCollection = Backbone.Collection.extend({
 	token:'CSHMIFYCN4CU3GOWHR5C',
 
 	parse: function(responseData){
-		console.log(responseData)
+		// console.log(responseData)
 		return responseData.events
 	}
 })
@@ -30,9 +35,24 @@ var freeCollection = Backbone.Collection.extend({
 
 
 var HomeView = React.createClass({
+
+	getInitialState: function(){
+		return {
+			formState: null
+		}
+		// formState has three possible values: null, "signUp", and "logIn"
+	},
+
+	_changeFormState: function(formState){
+		// this.setState({formState: })
+	},
+_popupDecide:function(){
+	if(!this.props.showLogin)return <div />
+	return <SignPop formState={this.state.formState} />
+},
 	render: function(){
 
-console.log(this.props.events)
+console.log('this.props.events')
 		return (
 			<div id="homeView">
 				<NavBar />
@@ -43,6 +63,9 @@ console.log(this.props.events)
 					<SearchBar />
 					<ListEvents events = {this.props.events} />
 				</div>
+				<ReactCSSTransitionReplace transitionName="fade">
+				{this._popupDecide()}
+				 </ReactCSSTransitionReplace>
 			</div>
 		)
 	}
@@ -66,8 +89,8 @@ var NavBar = React.createClass({
 					<ul id="dropdown-menu">
 				      <li role="presentation"><a href="#about">About</a></li>
 				      <li role="presentation"><a href="#createEvent">Create Event</a></li>
-				      <li role="presentation"><a href="#login">Log In</a></li>
-				      <li role="presentation"><a href="#logout">Log Out</a></li>
+				      <li role="presentation"><a href="#sign">Sign Up</a></li>
+				      <li role="presentation"><a href="#">Log Out</a></li>
 				    </ul>
 				</div>
 			</div>
@@ -105,14 +128,14 @@ var Event= React.createClass({
 var ListEvents = React.createClass({
 	
 	_renderEvent: function(eventObj){
-		console.log(eventObj)
+		// console.log(eventObj)
 		return <Event key={eventObj.id} data={eventObj} />
 	},
 
 	render: function(){
 		var events = this.props.events, 
 			componentArray = events.map(this._renderEvent)
-console.log(events)
+// console.log(events)
 		return <div>{componentArray}</div>
 	}
 })
@@ -133,26 +156,66 @@ var AboutView = React.createClass({
 	}
 })
 
-var LoginView = React.createClass({
+var SignPop = React.createClass({
+
+	_handleUserData: function(event){
+		// if (event.target.id === "sign"){
+		// 	// sign up a user
+		// 	var usr = new Parse.User()
+		// 	usr.set("")
+		// 	usr.signUp().then(//function to confirm signup)
+		// }
+		// else {
+		// 	// log a user in
+		// }
+	},
+
 	render: function(){
 		return(
-			<div>
-				<p>username<input type="text"></input></p>
-				<p>password<input type="text"></input></p>
+			<div id="signView">
+				<h3>Sign Up to Post Free Houston Events</h3>
+				<SignBox sendUserInfo={this.props.sendUserInfo}/>
+				<div id="buttons">
+					<button onClick={this._handleUserData} id="signup">Sign Up</button>
+				</div>
 			</div>
 		)
 	}
 })
 
+var SignBox = React.createClass({
+	_getSign: function(){
+		// var password = ??
+		// 	username = ??
+		// this.props.sendUserInfo(username,password)
+	},
+
+	render: function(){
+		return(
+			<div id="signBox">
+				<p>Username<input type="text"></input></p>
+				<p>Password<input type="password"></input></p>
+			</div>
+		)
+	}
+})
+//--------------------------ROUTER-----------------------
 
 var freeRouter = Backbone.Router.extend({
 	routes: {
-		'login': 'getLogin',
+		
+		'event':'createEvent',
 		'about': 'getAbout',
 		'search/:keywords': 'showSearch',
-		'home':'getHome'
+		'home':'getHome',
+		sign:'signup'
+		
 	},
+signup:function (argument) {
+	// body...
+		ReactDOM.render(<HomeView showLogin={true} events={this.fc}/>, document.querySelector('#container'))
 
+},
 	getHomeData: function(){
 		var self = this,
 			date = new Date(),
@@ -186,6 +249,12 @@ var freeRouter = Backbone.Router.extend({
 		return deferredObj
 	},
 
+	// processLogin: function(username,password){
+	// 	//how to login
+	// 	//newUser.logIn()
+	// 	//location.hash = "event"
+	// }
+
 	showSearch: function(keyword){
 		var boundRender = this.renderApp.bind(this)
 		var self = this
@@ -198,13 +267,17 @@ var freeRouter = Backbone.Router.extend({
 			document.querySelector('#container'))
 	},
 
-	getLogin: function(){
-		ReactDOM.render(<LoginView />,
-			document.querySelector('#container'))
+	createEvent: function(){
+		//this works with parse to create an event for users once they sign in. 
 	},
 
+	// getLogin: function(){
+	// 	ReactDOM.render(<LoginPop sendUserInfo={this.processLogin} />,
+	// 		document.querySelector('#container'))
+	// },
+
 	renderApp: function(){
-		ReactDOM.render(<HomeView events={this.fc}/>, document.querySelector('#container'))
+		ReactDOM.render(<HomeView  events={this.fc}/>, document.querySelector('#container'))
 	},
 
 	getHome: function(){
