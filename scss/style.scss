@@ -85,12 +85,22 @@ img {
         text-align: right;
         z-index: 2;
             div{
+<<<<<<< HEAD
 
                 input{
                     width: 65px;
                     height:65px;
                     -webkit-appearance: none;
                     background-color: cadetblue;
+=======
+                font-size: 24px;
+                
+                input{
+                    width: 65px;
+                    height:60px;
+                    -webkit-appearance: none;
+                    background-color: crimson;
+>>>>>>> gh-pages
                 }
                 ul#dropdown-menu{
                     list-style: none;
@@ -98,16 +108,26 @@ img {
                     opacity: 0;
                         li {
                             text-align: center;
+<<<<<<< HEAD
                             border: 2px solid black;
+=======
+>>>>>>> gh-pages
                         }
                     z-index: 99;
 
                 }
                 input:checked + ul#dropdown-menu {
+<<<<<<< HEAD
                     background-color:cadetblue;
                     z-index: 2;
                     opacity: 1;
                     height: 150px;
+=======
+                    background-color:crimson;
+                    z-index: 2;
+                    opacity: 1;
+                    height: 174px;
+>>>>>>> gh-pages
                     margin-top: -14px;
                 }
             }
@@ -158,7 +178,42 @@ img {
             }
         }
     }
+
+    div#signView {
+            opacity: 1;
+            position: absolute;
+            top: 380px;
+            background-color: greenyellow;
+            text-align: center;
+            div#buttons {
+                button#signup{
+                    display: block;
+                    margin-left: 95px;
+                }
+            }
+        }
 }
+.fade-leave {
+  opacity: 1;
+}
+.fade-leave.fade-leave-active {
+  opacity: 0.01;
+  transition: opacity .1s ease-in;
+}
+ 
+.fade-enter {
+  opacity: 0.01;
+}
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity .2s ease-in;
+}
+ 
+.fade-height {
+  transition: height .15s ease-in-out;
+}
+
+
 
 
 
