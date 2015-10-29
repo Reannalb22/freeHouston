@@ -63,13 +63,16 @@ console.log('this.props.events')
 					<SearchBar />
 					<ListEvents events = {this.props.events} />
 				</div>
-				<ReactCSSTransitionReplace transitionName="fade">
+			
+			<ReactCSSTransitionReplace transitionName="fade">
 				{this._popupDecide()}
 				 </ReactCSSTransitionReplace>
 			</div>
 		)
 	}
 })
+
+
 
 
 var TitleBar = React.createClass({
@@ -89,13 +92,8 @@ var NavBar = React.createClass({
 					<ul id="dropdown-menu">
 				      <li role="presentation"><a href="#about">About</a></li>
 				      <li role="presentation"><a href="#createEvent">Create Event</a></li>
-<<<<<<< HEAD
-				      <li role="presentation"><a href="#login">Log In</a></li>
-				      <li role="presentation"><a href="#logout">Log Out</a></li>
-=======
 				      <li role="presentation"><a href="#sign">Sign Up</a></li>
 				      <li role="presentation"><a href="#">Log Out</a></li>
->>>>>>> gh-pages
 				    </ul>
 				</div>
 			</div>
@@ -161,14 +159,7 @@ var AboutView = React.createClass({
 	}
 })
 
-<<<<<<< HEAD
-var LoginView = React.createClass({
-	render: function(){
-		return(
-			<div>
-				<p>username<input type="text"></input></p>
-				<p>password<input type="text"></input></p>
-=======
+
 var SignPop = React.createClass({
 
 	_handleUserData: function(event){
@@ -191,18 +182,11 @@ var SignPop = React.createClass({
 				<div id="buttons">
 					<button onClick={this._handleUserData} id="signup">Sign Up</button>
 				</div>
->>>>>>> gh-pages
 			</div>
 		)
 	}
 })
 
-<<<<<<< HEAD
-
-var freeRouter = Backbone.Router.extend({
-	routes: {
-		'login': 'getLogin',
-=======
 var SignBox = React.createClass({
 	_getSign: function(){
 		// var password = ??
@@ -225,13 +209,13 @@ var freeRouter = Backbone.Router.extend({
 	routes: {
 		
 		'event':'createEvent',
->>>>>>> gh-pages
 		'about': 'getAbout',
 		'search/:keywords': 'showSearch',
 		'home':'getHome',
 		sign:'signup'
 		
 	},
+
 signup:function (argument) {
 	// body...
 		ReactDOM.render(<HomeView showLogin={true} events={this.fc}/>, document.querySelector('#container'))
@@ -288,13 +272,7 @@ signup:function (argument) {
 			document.querySelector('#container'))
 	},
 
-<<<<<<< HEAD
-	getLogin: function(){
-		ReactDOM.render(<LoginView />,
-			document.querySelector('#container'))
-	},
 
-=======
 	createEvent: function(){
 		//this works with parse to create an event for users once they sign in. 
 	},
@@ -304,7 +282,7 @@ signup:function (argument) {
 	// 		document.querySelector('#container'))
 	// },
 
->>>>>>> gh-pages
+
 	renderApp: function(){
 		ReactDOM.render(<HomeView  events={this.fc}/>, document.querySelector('#container'))
 	},
