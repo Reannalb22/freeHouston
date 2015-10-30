@@ -165,7 +165,7 @@ img {
             opacity: 1;
             position: absolute;
             top: 380px;
-            background-color: greenyellow;
+            background-color: lightgoldenrodyellow;
             text-align: center;
             div#buttons {
                 button#signup{
@@ -175,26 +175,44 @@ img {
             }
         }
 }
-// .fade-leave {
-//   opacity: 1;
-// }
-// .fade-leave.fade-leave-active {
-//   opacity: 0.01;
-//   transition: opacity .1s ease-in;
-// }
+.fade-leave {
+  opacity: 1;
+}
+.fade-leave.fade-leave-active {
+  opacity: 0.01;
+  transition: opacity .1s ease-in;
+}
  
+.fade-enter {
+  opacity: 0.01;
+}
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity .2s ease-in;
+}
+ 
+.fade-height {
+  transition: height .15s ease-in-out;
+}
+
+
 // .fade-enter {
 //   opacity: 0.01;
 // }
+
 // .fade-enter.fade-enter-active {
 //   opacity: 1;
-//   transition: opacity .2s ease-in;
-// }
- 
-// .fade-height {
-//   transition: height .15s ease-in-out;
+//   transition: opacity 500ms ease-in;
 // }
 
+// .fade-leave {
+//   opacity: 1;
+// }
+
+// .fade-leave.fade-leave-active {
+//   opacity: 0.01;
+//   transition: opacity 300ms ease-in;
+// }
 
 
 

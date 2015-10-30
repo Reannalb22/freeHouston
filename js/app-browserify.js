@@ -8,11 +8,15 @@ var $ = require('jquery'),
 	React = require('react'),
 	ReactDOM = require('react-dom')
 	// Parse = require('parse')
-// var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+	// ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 import ReactCSSTransitionReplace from 'react-css-transition-replace';
 
 
-// var APP_ID: e7jWEAOxt9YSki1VgZJU5OMGsWWDphm7ZRMbgTYS,
+var APP_ID = 'e7jWEAOxt9YSki1VgZJU5OMGsWWDphm7ZRMbgTYS',
+	JS_KEY = 'GA1OcaDeYAVWaGVVPnCVwbEnn4Muej6YKMi3p1Mh',
+	REST_API_KEY = 'tNF3vLrlnjgozpu8tMC6aKLleLxww8R5fqpwfpcP'
+
+Parse.initialize(APP_ID,JS_KEY)
 
 
 var freeCollection = Backbone.Collection.extend({
@@ -43,9 +47,6 @@ var HomeView = React.createClass({
 		// formState has three possible values: null, "signUp", and "logIn"
 	},
 
-	_changeFormState: function(formState){
-		// this.setState({formState: })
-	},
 _popupDecide:function(){
 	if(!this.props.showLogin)return <div />
 	return <SignPop formState={this.state.formState} />
@@ -64,15 +65,13 @@ console.log('this.props.events')
 					<ListEvents events = {this.props.events} />
 				</div>
 			
-			<ReactCSSTransitionReplace transitionName="fade">
+			<ReactCSSTransitionReplace transitionName="fade" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
 				{this._popupDecide()}
 				 </ReactCSSTransitionReplace>
 			</div>
 		)
 	}
 })
-
-
 
 
 var TitleBar = React.createClass({
@@ -163,15 +162,17 @@ var AboutView = React.createClass({
 var SignPop = React.createClass({
 
 	_handleUserData: function(event){
-		// if (event.target.id === "sign"){
-		// 	// sign up a user
-		// 	var usr = new Parse.User()
-		// 	usr.set("")
-		// 	usr.signUp().then(//function to confirm signup)
-		// }
-		// else {
-		// 	// log a user in
-		// }
+		if (event.target.id === "sign"){
+			var newusr = new Parse.User()
+			newusr.set('username',username)
+			newusr.set('password', password)
+			newusr.signUp().then(console.log(newusr + "signed up!")
+				location.hash = "event")
+		}
+		else {
+			return newusr.logIn().then(console.log(newusr + "logged in!")
+				location.hash = "event")
+		}
 	},
 
 	render: function(){
