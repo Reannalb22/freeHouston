@@ -6,11 +6,13 @@ let fetch = require('./fetcher')
 var $ = require('jquery'),
 	Backbone = require('backbone'),
 	React = require('react'),
-	ReactDOM = require('react-dom')
-	// Parse = require('parse')
+	ReactDOM = require('react-dom'),
+	ReactCSSTransitionReplace = require('react-css-transition-replace'),
+	Parse = require('parse')
 	// ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-import ReactCSSTransitionReplace from 'react-css-transition-replace';
 
+window.Parse = Parse
+window.React = React
 
 var APP_ID = 'e7jWEAOxt9YSki1VgZJU5OMGsWWDphm7ZRMbgTYS',
 	JS_KEY = 'GA1OcaDeYAVWaGVVPnCVwbEnn4Muej6YKMi3p1Mh',
@@ -47,13 +49,13 @@ var HomeView = React.createClass({
 		// formState has three possible values: null, "signUp", and "logIn"
 	},
 
-_popupDecide:function(){
-	if(!this.props.showLogin)return <div />
-	return <SignPop formState={this.state.formState} />
-},
+	_popupDecide:function(){
+		if(!this.props.showLogin)return <div />
+		return <SignPop formState={this.state.formState} />
+	},
 	render: function(){
 
-console.log('this.props.events')
+		console.log(this.props.events)
 		return (
 			<div id="homeView">
 				<NavBar />
@@ -64,10 +66,13 @@ console.log('this.props.events')
 					<SearchBar />
 					<ListEvents events = {this.props.events} />
 				</div>
+					{this._popupDecide()}
+
+
 			
-			<ReactCSSTransitionReplace transitionName="fade" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-				{this._popupDecide()}
-				 </ReactCSSTransitionReplace>
+				{/*<ReactCSSTransitionReplace transitionName="fade" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+					{this._popupDecide()}
+				</ReactCSSTransitionReplace>*/}
 			</div>
 		)
 	}
@@ -89,10 +94,10 @@ var NavBar = React.createClass({
 				<div>
 					<input type = "checkbox" id = "dropButton"></input>
 					<ul id="dropdown-menu">
-				      <li role="presentation"><a href="#about">About</a></li>
-				      <li role="presentation"><a href="#createEvent">Create Event</a></li>
-				      <li role="presentation"><a href="#sign">Sign Up</a></li>
-				      <li role="presentation"><a href="#">Log Out</a></li>
+				      <li><a href="#about">About</a></li>
+				      <li><a href="#createEvent">Create Event</a></li>
+				      <li><a href="#sign">Sign Up</a></li>
+				      <li><a href="#logout">Log Out</a></li>
 				    </ul>
 				</div>
 			</div>
@@ -145,11 +150,12 @@ var ListEvents = React.createClass({
 var AboutView = React.createClass({
 	render: function(){
 		return (
-			<div>
+			<div id="aboutview">
+				<AboutNav />
 				<h3>About</h3>
-				<p>	Free Houston Events is where Houstonians go to find what's happening in Houston, for free. 
+				<p id="firstpara">	Free Houston Events is where Houstonians go to find what's happening in Houston, for free. 
 				</p>
-				<p>	If you're a company, venue, bar theater, non-profit or individual, sign up to post all of your free events here. 
+				<p>	If you're a company, venue, bar, theater, non-profit, or individual, sign up to post all of your free events here. 
 				</p>
 				<p>	Get noticed, and get yourself out there, Houston!
 				</p>
@@ -158,57 +164,156 @@ var AboutView = React.createClass({
 	}
 })
 
-
-var SignPop = React.createClass({
-
-	_handleUserData: function(event){
-		if (event.target.id === "sign"){
-			var newusr = new Parse.User()
-			newusr.set('username',username)
-			newusr.set('password', password)
-			newusr.signUp().then(console.log(newusr + "signed up!")
-				location.hash = "event")
-		}
-		else {
-			return newusr.logIn().then(console.log(newusr + "logged in!")
-				location.hash = "event")
-		}
-	},
-
+var AboutNav = React.createClass({
 	render: function(){
 		return(
-			<div id="signView">
-				<h3>Sign Up to Post Free Houston Events</h3>
-				<SignBox sendUserInfo={this.props.sendUserInfo}/>
-				<div id="buttons">
-					<button onClick={this._handleUserData} id="signup">Sign Up</button>
+			<div id="navButtons">
+				<div>
+					<input type = "checkbox" id = "dropButton"></input>
+					<ul id="dropdown-menu">
+				      <li><a href="#home">Home</a></li>
+				      <li><a href="#createEvent">Create Event</a></li>
+				      <li><a href="#sign">Sign Up</a></li>
+				      <li><a href="#logout">Log Out</a></li>
+				    </ul>
 				</div>
 			</div>
 		)
 	}
 })
 
+
+var SignPop = React.createClass({
+
+	
+
+	render: function(){
+		return(
+			<div id="signView">
+				<h3>Log in to post free Houston events. Enter a new username and password to sign up</h3>
+				<SignBox sendUserInfo={this.props.sendUserInfo}/>
+			</div>
+		)
+	}
+})
+
 var SignBox = React.createClass({
-	_getSign: function(){
-		// var password = ??
-		// 	username = ??
-		// this.props.sendUserInfo(username,password)
+	_handleUserData: function(event){
+		console.log(this.refs)
+		console.log(this.refs.usernameInput.value)
+		var newusr = new Parse.User(),
+			username = this.refs.usernameInput.value,
+			password = this.refs.passwordInput.value
+		if (event.target.id === "signup"){
+			newusr.set('username',username)
+			newusr.set('password', password)
+			newusr.signUp().then(
+				function(){
+					console.log("signed up!")
+					location.hash = "event"
+					},
+					function(err){
+					console.log(err)
+					}
+				).fail(
+					function(){
+						return newusr.logIn()
+					}
+				).then(function(){
+					console.log('success!')
+					location.hash = "event"
+				})
+			} 
+		// else {
+		//  return newusr.logIn().then(
+		//  	// success callback
+		//  	function(){
+		//  		console.log("logged in!")
+		// 		location.hash = "event"
+		// 	},
+		// 	// fail callback
+		// 	function(result,err){
+		// 		console.log(err)
+		// 	}
+		// )}
 	},
 
 	render: function(){
 		return(
 			<div id="signBox">
-				<p>Username<input type="text"></input></p>
-				<p>Password<input type="password"></input></p>
+				<p>Username<input ref="usernameInput" type="text"></input></p>
+				<p>Password<input ref="passwordInput" type="password"></input></p>
+				<button onClick={this._handleUserData} id="signup">Log In / Sign Up</button>
 			</div>
 		)
 	}
 })
+
+var EventView = React.createClass({
+
+	componentWillMount: function(){
+		console.log('bout to mount')
+	},
+
+	render: function(){
+		console.log('rendering eventview')
+		return(
+			<div id="eventview">
+				<EventNavBar />
+				<Greeting />
+				<EventForm />
+			</div>
+		)
+	}
+})
+
+var EventNavBar = React.createClass({
+	render: function(){
+		return(
+			<div id="navButtons">
+				<div>
+					<input type = "checkbox" id = "dropButton"></input>
+					<ul id="dropdown-menu">
+				      <li><a href="#createdEvents">My Created Events</a></li>
+				      <li><a href="#savedEvents">My Saved Events</a></li>
+				      <li><a href="#logout">Log Out</a></li>
+				    </ul>
+				</div>
+			</div>
+		)
+	}
+})
+
+var Greeting = React.createClass({
+	render: function(){
+		return(
+			<div id="greeting">
+				<h3>Hey There, </h3>
+				<p>Let's Create Your Event</p>
+			</div>
+		)
+	}
+})
+
+var EventForm = React.createClass({
+	render: function(){
+		return(
+			<div id="eventform">
+				<p>Event Title: <input ref="usernameInput" type="text"></input></p>
+				<p>Location: <input ref="passwordInput" type="password"></input></p>
+				<p>Event Description: <textarea rows="5"></textarea></p>
+				<button onClick={this._handleUserData} id="signup">Log In / Sign Up</button>
+			</div>
+		)
+	}
+})
+
 //--------------------------ROUTER-----------------------
 
 var freeRouter = Backbone.Router.extend({
 	routes: {
 		
+		'logout':'logUserOut',
 		'event':'createEvent',
 		'about': 'getAbout',
 		'search/:keywords': 'showSearch',
@@ -217,11 +322,21 @@ var freeRouter = Backbone.Router.extend({
 		
 	},
 
-signup:function (argument) {
+	signup:function (argument) {
 	// body...
 		ReactDOM.render(<HomeView showLogin={true} events={this.fc}/>, document.querySelector('#container'))
 
-},
+	},
+
+	logUserOut: function(){
+		Parse.User.logOut().then(
+			function(){
+				location.hash = 'home'
+			}
+		)
+		this.fc.reset()
+	},
+
 	getHomeData: function(){
 		var self = this,
 			date = new Date(),
@@ -255,11 +370,6 @@ signup:function (argument) {
 		return deferredObj
 	},
 
-	// processLogin: function(username,password){
-	// 	//how to login
-	// 	//newUser.logIn()
-	// 	//location.hash = "event"
-	// }
 
 	showSearch: function(keyword){
 		var boundRender = this.renderApp.bind(this)
@@ -275,13 +385,11 @@ signup:function (argument) {
 
 
 	createEvent: function(){
-		//this works with parse to create an event for users once they sign in. 
+		console.log("event routing")
+		ReactDOM.render(<EventView />,
+			document.querySelector('#container'))
+		console.log('rendered event')
 	},
-
-	// getLogin: function(){
-	// 	ReactDOM.render(<LoginPop sendUserInfo={this.processLogin} />,
-	// 		document.querySelector('#container'))
-	// },
 
 
 	renderApp: function(){
@@ -297,11 +405,11 @@ signup:function (argument) {
 	},
 
 
-initialize: function(){
-	location.hash = "home"
-	this.fc = new freeCollection()
-	Backbone.history.start()
-}
+	initialize: function(){
+		// location.hash = "home"
+		this.fc = new freeCollection()
+		Backbone.history.start()
+	}
 })
 
 var freebie = new freeRouter
