@@ -317,6 +317,7 @@ var EventNavBar = React.createClass({
 				<div>
 					<input type = "checkbox" id = "dropButton"></input>
 					<ul id="dropdown-menu">
+					  <li><a href="#home">Home</a></li>
 				      <li><a href="#createdEvents">My Created Events</a></li>
 				      <li><a href="#savedEvents">My Saved Events</a></li>
 				      <li><a href="#logout">Log Out</a></li>
@@ -360,7 +361,7 @@ var freeRouter = Backbone.Router.extend({
 		
 		'details/:listing_id':'getDetails',
 		'logout':'logUserOut',
-		'event':'createEvent',
+		'createEvent':'createEvent',
 		'about': 'getAbout',
 		'search/:keywords': 'showSearch',
 		'home':'getHome',
