@@ -31,6 +31,16 @@ var freeCollection = Backbone.Collection.extend({
 	}
 })
 
+var freeModel = Backbone.Model.extend({
+	url: 'https://www.eventbriteapi.com/v3/events',
+	token: 'CSHMIFYCN4CU3GOWHR5C'
+
+	// parse: function(responseData){
+	// 	// console.log(responseData)
+	// 	return responseData.events
+	// }
+})
+
 // key: 'XSX52YKC2DDMNF4D4Q'
 
 // client_secret: '4UVXHV53T7S36JQABUWC2IEDMVKWCFDQQQEDMLU4475QHPPZTF'
@@ -123,9 +133,16 @@ var SearchBar = React.createClass({
 
 
 var Event= React.createClass({
+	
+	_clickEvent: function(event){
+		var detailClick = event.target,
+			detailId = detailClick.id;
+		location.hash = `details/${detailId}`
+	},
+
 	render: function(){
 		return (
-			<div>
+			<div onClick = {this._clickEvent} id={this.props.data.attributes.id}>
 				<p>{this.props.data.get("name").text}</p>
 			</div>
 		)
@@ -144,6 +161,34 @@ var ListEvents = React.createClass({
 			componentArray = events.map(this._renderEvent)
 // console.log(events)
 		return <div>{componentArray}</div>
+	}
+})
+
+var DetailsView = React.createClass({
+	render: function(){
+		return(
+			<div>
+				<Details event = {this.props.event} />
+			</div>
+		)
+	}
+})
+
+var Details = React.createClass({
+	render: function(){
+		var name = this.props.data[0].name.text
+			description = this.props.data[0].description.text
+			url = this.props.data[0].url
+			start = this.props.data[0].start.local
+			end = this.props.data[0].end.local
+		return(
+			<div>
+				<p>${name}</p>
+				<p>${description}</p>
+				<p>${url}</p>
+				<p>${start} to ${end}</p>
+			</div>
+		)
 	}
 })
 
@@ -184,8 +229,6 @@ var AboutNav = React.createClass({
 
 
 var SignPop = React.createClass({
-
-	
 
 	render: function(){
 		return(
@@ -308,11 +351,14 @@ var EventForm = React.createClass({
 	}
 })
 
+
+
 //--------------------------ROUTER-----------------------
 
 var freeRouter = Backbone.Router.extend({
 	routes: {
 		
+		'details/:listing_id':'getDetails',
 		'logout':'logUserOut',
 		'event':'createEvent',
 		'about': 'getAbout',
@@ -379,10 +425,39 @@ var freeRouter = Backbone.Router.extend({
 	},
 
 	getAbout: function(){
-		ReactDOM.render(<AboutView />,
+		ReactDOM.render(<AboutView events={this.fc}/>,
 			document.querySelector('#container'))
 	},
 
+	getDetailData: function(listing_id){
+		console.log(this.fm)
+		var self = this,
+		deferredObj = this.fm.fetch ({
+			data:{
+				token: self.fm.token,
+				id: listing_id
+			},
+			processData: true,
+			dataType:'json'
+		})
+		return deferredObj
+	},
+
+	renderDetails: function(){
+			console.log(this.fm)
+			ReactDOM.render(<DetailsView event={this.fm} />,
+			document.querySelector('#container'))
+			
+	},
+
+	getDetails: function(listing_id){
+		var boundRender = this.renderDetails.bind(this)
+		var deferredObj = this.getDetailData(listing_id)
+		deferredObj.done(function(){
+			console.log('here comes the deets')
+			boundRender()
+		})
+	},
 
 	createEvent: function(){
 		console.log("event routing")
@@ -393,13 +468,12 @@ var freeRouter = Backbone.Router.extend({
 
 
 	renderApp: function(){
-		ReactDOM.render(<HomeView  events={this.fc}/>, document.querySelector('#container'))
+		ReactDOM.render(<HomeView events={this.fc}/>, document.querySelector('#container'))
 	},
 
 	getHome: function(){
 		
 		var boundRender = this.renderApp.bind(this)
-
 		var deferredObj = this.getHomeData()
 			deferredObj.done(boundRender)
 	},
@@ -408,6 +482,7 @@ var freeRouter = Backbone.Router.extend({
 	initialize: function(){
 		// location.hash = "home"
 		this.fc = new freeCollection()
+		this.fm = new freeModel()
 		Backbone.history.start()
 	}
 })
