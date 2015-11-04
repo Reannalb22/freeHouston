@@ -32,7 +32,7 @@
     "postinstall": "npm run bower && npm run build-resolver && npm run build",
     "docs": "esdoc -c esdoc.json",
     "check": "requiresafe check; echo 'check completed';",
-    "gh-pages": "git add . && git commit -am 'cleaning up any staged and uncomitted changes'; git checkout master; npm-run-all build:* && git subtree split --prefix dist -b gh-pages && git checkout autobuilder && cp dist/app-browserify.js . && cp dist/style.css . && git add app-browserify.js style.css && git commit -am 'cleaning and pushing' && git push origin autobuilder:gh-pages --force; git checkout master; git branch -Dq autobuilder; echo 'done';",
+    "gh-pages": "git add .; git commit -am '$npm_package_config_autobuild'; git push HEAD master:gh-pages; git push origin --all;",
     "surge": "surge dist",
     "teardown": "surge list; echo 'type a domain from above: \n ------------ \n\n '; surge teardown"
   },
