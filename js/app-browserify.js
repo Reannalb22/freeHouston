@@ -20,11 +20,21 @@ var APP_ID = 'e7jWEAOxt9YSki1VgZJU5OMGsWWDphm7ZRMbgTYS',
 
 Parse.initialize(APP_ID,JS_KEY)
 
+// var createDate=(datStr,timeStr){
+// var newDate = new Date()
+// dateArray=datStr.split('-')
+// 		newDate.setFullYear(dateArray[0])
+// 		newDate.setMonth(dateArray[1]-1)
+// 		newDate.setDate(dateArray[2])
+// return newDate
+// },
+
+// myDate = createDate($('.input[type=date]').val())
+
 
 var freeCollection = Backbone.Collection.extend({
 	url:'https://www.eventbriteapi.com/v3/events/search/?venue.city=Houston&price=free',
 	token:'CSHMIFYCN4CU3GOWHR5C',
-
 	parse: function(responseData){
 		// console.log(responseData)
 		return responseData.events
@@ -32,7 +42,10 @@ var freeCollection = Backbone.Collection.extend({
 })
 
 var freeModel = Backbone.Model.extend({
-	url: 'https://www.eventbriteapi.com/v3/events',
+	url : function(){
+		return `https://www.eventbriteapi.com/v3/events/${this.get('id')}/`
+	},
+
 	token: 'CSHMIFYCN4CU3GOWHR5C'
 
 	// parse: function(responseData){
@@ -117,16 +130,16 @@ var NavBar = React.createClass({
 
 var SearchBar = React.createClass({
 	_searchHandler: function(event){
-		if (event.keyCode === 13){
+		{
 			var inputEl = event.target,
-				keywords = inputEl.value
-			location.hash = `search/${keywords}`
+				dates = inputEl.value
+			location.hash = `search/${dates}`
 		}
 	},
 
 	render: function(){
 		return(
-			<input type="text" placeholder="Search Events i.e. tomorrow, this_weekend" onKeyDown = {this._searchHandler} />
+			<input type="date" placeholder="Search Events i.e. tomorrow, this_weekend" onChange = {this._searchHandler} />
 		)
 	}
 })
@@ -142,8 +155,8 @@ var Event= React.createClass({
 
 	render: function(){
 		return (
-			<div onClick = {this._clickEvent} id={this.props.data.attributes.id}>
-				<p>{this.props.data.get("name").text}</p>
+			<div>
+				<p onClick = {this._clickEvent} id={this.props.data.attributes.id}>{this.props.data.get("name").text}</p>
 			</div>
 		)
 	}
@@ -167,7 +180,8 @@ var ListEvents = React.createClass({
 var DetailsView = React.createClass({
 	render: function(){
 		return(
-			<div>
+			<div id="detailView">
+				<EventNavBar />
 				<Details event = {this.props.event} />
 			</div>
 		)
@@ -176,21 +190,39 @@ var DetailsView = React.createClass({
 
 var Details = React.createClass({
 	render: function(){
-		var name = this.props.data[0].name.text
-			description = this.props.data[0].description.text
-			url = this.props.data[0].url
-			start = this.props.data[0].start.local
-			end = this.props.data[0].end.local
+		var name = this.props.event.attributes.name.text
+		
+		var url = this.props.event.attributes.url
+
+		var start = new Date(this.props.event.attributes.start.local)
+		var sDate = start.toLocaleDateString()
+		
+		var sTime = start.toLocaleTimeString().replace(':00', '')
+		
+		var end = new Date(this.props.event.attributes.end.local)
+		var eDate = end.toLocaleDateString()
+		
+		var eTime = end.toLocaleTimeString().replace(':00', '')
+		
+		var logo
+		if(this.props.event.attributes.logo) {
+			logo = this.props.event.attributes.logo.url
+		}
+		else logo = 'https://upload.wikimedia.org/wikipedia/commons/4/44/Panoramic_Houston_skyline.jpg'
+		
 		return(
-			<div>
-				<p>${name}</p>
-				<p>${description}</p>
-				<p>${url}</p>
-				<p>${start} to ${end}</p>
+			<div id="details">
+				<h3>{name}</h3>
+				<img src = {logo} />
+				<p id="date"><strong>{sDate} {sTime} to {eDate} {eTime}</strong></p>
+				<p id="url"> <strong>Find Out More at:</strong> <a href = {url}> {url} </a></p>
 			</div>
 		)
 	}
 })
+
+
+
 
 var AboutView = React.createClass({
 	render: function(){
@@ -340,13 +372,41 @@ var Greeting = React.createClass({
 })
 
 var EventForm = React.createClass({
+	
+	componentWillMount: function(){
+		console.log('event form compwillmount')
+	},
+
+	_handleUserData: function(){
+		var eventToSave = new Parse.Object("Event")
+		var date = new Date()
+
+		eventToSave.set('title', this._eventTitle.getDOMNode().value)
+		eventToSave.set('location', this._eventLocation.getDOMNode().value)
+		eventToSave.set('start_date', this._eventStartDate.getDOMNode().value)
+		eventToSave.set('end_date', this._eventEndDate.getDOMNode().value)
+		eventToSave.set('start_time', this._eventStartTime.getDOMNode().value)
+		eventToSave.set('end_time', this._eventEndTime.getDOMNode().value)
+		eventToSave.set('event_description', this._eventDescription.getDOMNode().value)
+
+	// var eventDataObject = {
+		// this.eventDataObject
+		
+		// console.log(eventDataObject)
+		eventToSave.save()
+	},
+
 	render: function(){
 		return(
 			<div id="eventform">
-				<p>Event Title: <input ref="usernameInput" type="text"></input></p>
-				<p>Location: <input ref="passwordInput" type="password"></input></p>
-				<p>Event Description: <textarea rows="5"></textarea></p>
-				<button onClick={this._handleUserData} id="signup">Log In / Sign Up</button>
+				<p>Event Title: <input ref={(c) => this._eventTitle = c} type="text"></input></p>
+				<p>Location:    <input ref={(c) => this._eventLocation = c} type="text"></input></p>
+				<p>Start Date:  <input ref={(c) => this._eventStartDate = c} type="date"></input></p> 
+				<p>End Date:    <input ref={(c) => this._eventEndDate = c} type="date"></input></p> 
+				<p>Start Time:  <input ref={(c) => this._eventStartTime = c} type="time"></input></p> 
+				<p>End Time:    <input ref={(c) => this._eventEndTime = c} type="time"></input></p>
+				<p>Event Description: <textarea ref={(c) => this._eventDescription = c} rows="5"></textarea></p>
+				<button onClick={this._handleUserData} id="signup">Submit Event</button>
 			</div>
 		)
 	}
@@ -354,7 +414,7 @@ var EventForm = React.createClass({
 
 
 
-//--------------------------ROUTER-----------------------
+//-------------------------ROUTER-----------------------
 
 var freeRouter = Backbone.Router.extend({
 	routes: {
@@ -363,7 +423,7 @@ var freeRouter = Backbone.Router.extend({
 		'logout':'logUserOut',
 		'createEvent':'createEvent',
 		'about': 'getAbout',
-		'search/:keywords': 'showSearch',
+		'search/:date': 'showSearch',
 		'home':'getHome',
 		sign:'signup'
 		
@@ -402,14 +462,26 @@ var freeRouter = Backbone.Router.extend({
 			})
 		return deferredObj
 	},
-
-	getSearch: function(keyword){
+	getSearch: function(date){
 		console.log('s')
 		var self = this,
-		deferredObj = this.fc.fetch({
+			newDate = new Date(), 
+			dateArray = date.split("-")
+		newDate.setFullYear(dateArray[0])
+		newDate.setMonth(dateArray[1]-1)
+		newDate.setDate(dateArray[2])
+		console.log(newDate)
+
+		var start = JSON.stringify(newDate);
+		newDate.setDate(newDate.getDate()+1)
+		var end = JSON.stringify(newDate);
+
+			
+		var deferredObj = this.fc.fetch({
 			data: {
 				token: self.fc.token,
-				'start_date.keyword' : keyword
+				'start_date.range_start': start.substring(1,start.length - 6),
+				'start_date.range_end': end.substring(1,end.length - 6)
 			},
 			processData: true,
 			dataType:'json'
@@ -418,10 +490,10 @@ var freeRouter = Backbone.Router.extend({
 	},
 
 
-	showSearch: function(keyword){
+	showSearch: function(date){
 		var boundRender = this.renderApp.bind(this)
 		var self = this
-		var deferredObj = this.getSearch(keyword)
+		var deferredObj = this.getSearch(date)
 		deferredObj.done(boundRender)
 	},
 
@@ -432,11 +504,12 @@ var freeRouter = Backbone.Router.extend({
 
 	getDetailData: function(listing_id){
 		console.log(this.fm)
+		this.fm.set('id', listing_id)
 		var self = this,
 		deferredObj = this.fm.fetch ({
 			data:{
-				token: self.fm.token,
-				id: listing_id
+				token: self.fm.token
+				// id: listing_id
 			},
 			processData: true,
 			dataType:'json'
