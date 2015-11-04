@@ -13,7 +13,7 @@ var $ = require('jquery'),
 
 window.Parse = Parse
 window.React = React
-
+window.$=$
 var APP_ID = 'e7jWEAOxt9YSki1VgZJU5OMGsWWDphm7ZRMbgTYS',
 	JS_KEY = 'GA1OcaDeYAVWaGVVPnCVwbEnn4Muej6YKMi3p1Mh',
 	REST_API_KEY = 'tNF3vLrlnjgozpu8tMC6aKLleLxww8R5fqpwfpcP'
@@ -220,8 +220,6 @@ var Details = React.createClass({
 		)
 	}
 })
-
-
 
 
 var AboutView = React.createClass({
