@@ -32,7 +32,7 @@
     "postinstall": "npm run bower && npm run build-resolver && npm run build",
     "docs": "esdoc -c esdoc.json",
     "check": "requiresafe check; echo 'check completed';",
-    "gh-pages": "git add .; git commit -am '$npm_package_config_autobuild'; git push HEAD master:gh-pages; git push origin --all;",
+    "gh-pages": "git add .; git commit -am '$npm_package_config_autobuild'; git checkout gh-pages; git merge master; git push origin --all; git checkout master;",
     "surge": "surge dist",
     "teardown": "surge list; echo 'type a domain from above: \n ------------ \n\n '; surge teardown"
   },
