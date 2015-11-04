@@ -10,7 +10,7 @@ var $ = require('jquery'),
 	ReactCSSTransitionReplace = require('react-css-transition-replace'),
 	Parse = require('parse')
 	// ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-
+console.log('loaded')
 window.Parse = Parse
 window.React = React
 window.$=$
@@ -324,7 +324,11 @@ var SignBox = React.createClass({
 })
 
 var SignEventbrite = React.createClass({
-	<button><a href='https://www.eventbrite.com/oauth/authorize?response_type=token&client_id=XSX52YKC2DDMNF4D4Q'>Log In with Eventbrite</a></button>
+	render: function(){
+		return(
+				<button><a href='https://www.eventbrite.com/oauth/authorize?response_type=token&client_id=XSX52YKC2DDMNF4D4Q'>Log In with Eventbrite</a></button>
+		)
+	}
 })
 
 var EventView = React.createClass({
