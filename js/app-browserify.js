@@ -264,9 +264,10 @@ var SignPop = React.createClass({
 		return(
 			<div id="signView">
 				<h3>Log in to post free Houston events. Enter a new username and password to sign up</h3>
-				<SignBox sendUserInfo={this.props.sendUserInfo}/>
+				<SignEventbrite />
 			</div>
 		)
+				// <SignBox sendUserInfo={this.props.sendUserInfo}/>
 	}
 })
 
@@ -320,6 +321,10 @@ var SignBox = React.createClass({
 			</div>
 		)
 	}
+})
+
+var SignEventbrite = React.createClass({
+	<button><a href='https://www.eventbrite.com/oauth/authorize?response_type=token&client_id=XSX52YKC2DDMNF4D4Q'>Log In with Eventbrite</a></button>
 })
 
 var EventView = React.createClass({
