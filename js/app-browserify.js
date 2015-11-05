@@ -1,6 +1,6 @@
 // es5 and 6 polyfills, powered by babel
 require("babel/polyfill")
-
+alert()
 let fetch = require('./fetcher')
 
 var $ = require('jquery'),
