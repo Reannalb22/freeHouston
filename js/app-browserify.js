@@ -1,6 +1,5 @@
 // es5 and 6 polyfills, powered by babel
 require("babel/polyfill")
-alert()
 let fetch = require('./fetcher')
 
 var $ = require('jquery'),
@@ -53,14 +52,6 @@ var freeModel = Backbone.Model.extend({
 	// 	return responseData.events
 	// }
 })
-
-// key: 'XSX52YKC2DDMNF4D4Q'
-
-// client_secret: '4UVXHV53T7S36JQABUWC2IEDMVKWCFDQQQEDMLU4475QHPPZTF'
-
-// OAuth_token: 'RFJVFZFYRORRQSOUJG2L' 
-
-// Anon_access_token: 'CSHMIFYCN4CU3GOWHR5C'
 
 
 var HomeView = React.createClass({
