@@ -1,7 +1,7 @@
 // es5 and 6 polyfills, powered by babel
 require("babel/polyfill")
 let fetch = require('./fetcher')
-//this push is also correct.
+//this push super correct.
 var $ = require('jquery'),
 	Backbone = require('backbone'),
 	React = require('react'),
@@ -103,15 +103,37 @@ var TitleBar = React.createClass({
 
 var NavBar = React.createClass({
 	render: function(){
+
+		var signUpStyle,
+			logOutStyle,
+			createEventStyle,
+			myEventsStyle
+
+		if (Parse.User.current({true})){
+			signUpStyle = {display: "none"},
+			logOutStyle = {display: "block"},
+			createEventStyle = {display:"block"},
+			myEventsStyle = {display:"block"}
+		}
+
+		else { 
+			signUpStyle = {display:"block"},
+			logOutStyle = {display:"none"},
+			createEventStyle = {display: "none"},
+			myEventsStyle = {display:"none"}
+		}
+
+
 		return(
 			<div id="navButtons">
 				<div>
 					<input type = "checkbox" id = "dropButton"></input>
 					<ul id="dropdown-menu">
 				      <li><a href="#about">About</a></li>
-				      <li><a href="#sign">Sign Up</a></li>
-				      <li><a href="#event">Create Event</a></li>
-				      <li><a href="#logout">Log Out</a></li>
+				      <li style={signUpStyle} ><a href="#sign">Log In</a></li>
+				      <li style={createEventStyle}><a href="#event">Create Event</a></li>
+				      <li style={myEventsStyle}><a href="#myCreatedEvents">My Created Events</a></li>
+				      <li style={logOutStyle} ><a href="#logout">Log Out</a></li>
 				    </ul>
 				</div>
 			</div>
@@ -174,7 +196,7 @@ var ListEvents = React.createClass({
 		var events = this.props.events, 
 			componentArray = events.map(this._renderEvent)
 // console.log(events)
-		return <div>{componentArray}</div>
+		return <div id = "listEvent">{componentArray}</div>
 	}
 })
 
@@ -182,7 +204,7 @@ var DetailsView = React.createClass({
 	render: function(){
 		return(
 			<div id="detailView">
-				<EventNavBar />
+				<NavBar />
 				<Details event = {this.props.event} />
 			</div>
 		)
@@ -227,7 +249,7 @@ var AboutView = React.createClass({
 	render: function(){
 		return (
 			<div id="aboutview">
-				<AboutNav />
+				<NavBar />
 				<h3>About</h3>
 				<p id="firstpara">	Free Houston Events is where Houstonians go to find what's happening in Houston, for free. 
 				</p>
@@ -318,8 +340,8 @@ var SignBox = React.createClass({
 	render: function(){
 		return(
 			<div id="signBox">
-				<p>Username<input ref="usernameInput" type="text"></input></p>
-				<p>Password<input ref="passwordInput" type="password"></input></p>
+				<p>Username  <input ref="usernameInput" type="text"></input></p>
+				<p>Password  <input ref="passwordInput" type="password"></input></p>
 				<button onClick={this._handleUserData} id="signup">Log In / Sign Up</button>
 			</div>
 		)
@@ -346,7 +368,7 @@ var EventView = React.createClass({
 		console.log('rendering eventview')
 		return(
 			<div id="eventview">
-				<EventNavBar />
+				<NavBar />
 				<Greeting />
 				<EventForm />
 			</div>
@@ -354,23 +376,23 @@ var EventView = React.createClass({
 	}
 })
 
-var EventNavBar = React.createClass({
+// var EventNavBar = React.createClass({
 	
-	render: function(){
-		return(
-			<div id="navButtons">
-				<div>
-					<input type = "checkbox" id = "dropButton"></input>
-					<ul id="dropdown-menu">
-					  <li><a href="#home">Home</a></li>
-				      <li><a href="#myCreatedEvents">My Created Events</a></li>
-				      <li><a href="#logout">Log Out</a></li>
-				    </ul>
-				</div>
-			</div>
-		)
-	}
-})
+// 	render: function(){
+// 		return(
+// 			<div id="navButtons">
+// 				<div>
+// 					<input type = "checkbox" id = "dropButton"></input>
+// 					<ul id="dropdown-menu">
+// 					  <li><a href="#home">Home</a></li>
+// 				      <li><a href="#myCreatedEvents">My Created Events</a></li>
+// 				      <li><a href="#logout">Log Out</a></li>
+// 				    </ul>
+// 				</div>
+// 			</div>
+// 		)
+// 	}
+// })
 
 //another feature perhaps to add later
 //<li><a href="#savedEvents">My Saved Events</a></li>
@@ -506,7 +528,8 @@ var EventForm = React.createClass({
 var myCreatedEventView= React.createClass({
 	render: function(){
 		return(
-			<div id="createView">
+			<div id="myCreated">
+				<NavBar />
 				<ListEvents events = {this.props.events} />
 			</div>
 		)
@@ -514,6 +537,8 @@ var myCreatedEventView= React.createClass({
 })
 
 
+
+//<li><a href="#event">Create Event</a></li>
 
 
 //-------------------------ROUTER-----------------------
@@ -625,6 +650,8 @@ var freeRouter = Backbone.Router.extend({
 			console.log(eventArr)
 		ReactDOM.render(<ListEvents events={eventArr}/>, document.querySelector('#container'))
 		})
+
+		// 
 
 	// $.ajax({
 	// 		url: `https://www.eventbriteapi.com/v3/events/${getIdString}`,

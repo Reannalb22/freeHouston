@@ -101,6 +101,9 @@ img {
                     opacity: 0;
                         li {
                             text-align: center;
+                            a {
+                                color: black;
+                            }
                         }
                     z-index: 99;
 
@@ -126,7 +129,7 @@ img {
     }
 
     div#titleBar{
-        height: 1000px;
+        height: 100%;
         background-color: khaki;
         position: fixed;
         top:60px;
@@ -141,6 +144,7 @@ img {
         }
     }
 
+
     div#eventContent{
         margin-top: 1000px;
         position: relative;
@@ -152,9 +156,10 @@ img {
             height:50px;
         }
 
-        div{
+        div#listEvent{
             font-size: 25px;
             font-family: Palatino, Arial;
+            cursor: pointer;
             div {
                 border: dashed lightgray;
                 padding: 2px;
@@ -165,24 +170,32 @@ img {
     }
 
     div#signView {
-            opacity: 1;
-            position: absolute;
-            top: 380px;
-            background-color: lightgoldenrodyellow;
-            text-align: center;
-            div#buttons {
-                button#signup{
-                    display: block;
-                    margin-left: 95px;
-                }
+        opacity: 1;
+        position: absolute;
+        top: 380px;
+        background-color: lightgoldenrodyellow;
+        text-align: center;
+        box-shadow: 4px 4px 4px 4px #999;
+        margin-left: 15%;
+        width: 70%;
+        div {
+            p {
+                text-indent: 0;
+                margin-top: -0.5em;
+            }
+            
+            button#signup{
+                display: block;
+                margin-left: 45%;
             }
         }
+    }
 }
 
 div#aboutview{
     background-color: khaki;
     text-align: center;
-    height: 890px;
+    height: 900px;
     
     div#navButtons{
         background-color: black;
@@ -210,6 +223,9 @@ div#aboutview{
                     opacity: 0;
                         li {
                             text-align: center;
+                            a {
+                                color: black;
+                            }
                         }
                     z-index: 99;
 
@@ -245,7 +261,7 @@ div#aboutview{
 
 div#eventview {
     background-color: khaki; 
-    height: 1050px;
+    height: 900px;
     div#navButtons{
         background-color: black;
         color:white;
@@ -272,9 +288,11 @@ div#eventview {
                     opacity: 0;
                         li {
                             text-align: center;
+                            a {
+                                color: black;
+                            }
                         }
                     z-index: 99;
-
                 }
                 input:checked + ul#dropdown-menu {
 
@@ -283,7 +301,7 @@ div#eventview {
                     opacity: 1;
                     height: 174px;
                     margin-top: -14px;
-                    padding: 10px;
+                    padding: 16px;
                 }
             }
         div{
@@ -298,19 +316,25 @@ div#eventview {
             font-family: 'Oleo Script', cursive;
         }
         p {
-            font-size: 30px;
+            font-size: 60px;
             text-align: center;
             font-family: Palatino, Arial;
+            margin: 0;
         }
     }
 
     div#eventform{
+        border: black 2px solid;
+        width: 500px;
+        margin-left: auto;
         text-align: center;
-        p{
-            margin: 50px;
+        p {
             font-size: 20px;
             font-family: Palatino,Arial;
             text-align: left;
+            margin: 1rem 0 0 2rem;
+            text-indent: none;
+            
         }
     
     button#signup{
@@ -362,7 +386,10 @@ div#detailView {
                     position: relative;
                     opacity: 0;
                         li {
-                            text-align: center;
+                            text-align: left;
+                            a {
+                                color: black;
+                            }
                         }
                     z-index: 99;
 
@@ -372,7 +399,6 @@ div#detailView {
                     background-color:crimson;
                     z-index: 2;
                     opacity: 1;
-                    height: 174px;
                     margin-top: -14px;
                     padding: 10px;
                 }
@@ -382,6 +408,29 @@ div#detailView {
         }
     }
 }
+
+#container{
+    div#listEvent{
+            font-size: 25px;
+            font-family: Palatino, Arial;
+            cursor: pointer;
+        }
+}
+
+// div#myCreated{
+//     margin-top: 1000px;
+//     position: relative;
+//     background-color: cadetblue;
+//     text-align: center;
+//     font-size: 25px;
+//     font-family: Palatino, Arial;
+//     border: dashed lightgray;
+//     padding: 2px;
+//     text-align: center;
+//     margin: 30px;   
+// }
+
+
 
 
 // .fade-leave {
