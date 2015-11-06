@@ -1,7 +1,7 @@
 // es5 and 6 polyfills, powered by babel
 require("babel/polyfill")
 let fetch = require('./fetcher')
-//this push is correct.
+//this push is also correct.
 var $ = require('jquery'),
 	Backbone = require('backbone'),
 	React = require('react'),
@@ -146,9 +146,18 @@ var Event= React.createClass({
 	},
 
 	render: function(){
+		console.log(this.props)
+		if(this.props.data.attributes){
+			var id = this.props.data.attributes.id
+			var name = this.props.data.get("name").text
+		}
+		else{
+		 	var id = this.props.data.id
+		 	var name = this.props.data.name.text
+		}
 		return (
 			<div>
-				<p onClick = {this._clickEvent} id={this.props.data.attributes.id}>{this.props.data.get("name").text}</p>
+				<p onClick = {this._clickEvent} id={id}>{name}</p>
 			</div>
 		)
 	}
@@ -288,7 +297,7 @@ var SignBox = React.createClass({
 					}
 				).then(function(){
 					console.log('success!')
-					Backbone.navigate('event',{trigger:true})
+					// Backbone.navigate('event',{trigger:true})
 					location.hash = "event"
 				})
 			} 
@@ -594,19 +603,39 @@ var freeRouter = Backbone.Router.extend({
 
 	showMyEvents: function(){
 	
-		var getIdString = Parse.User.current().get('eventIds').join(',')
-
-	$.ajax({
-			url: `https://www.eventbriteapi.com/v3/events/search/?id=${getIdString}`,
-			data: {
-		        
-		        token: 'RFJVFZFYRORRQSOUJG2L'
-				},
+		var eventIdsArr = Parse.User.current().get('eventIds')
+		var deferreds = eventIdsArr.map(id =>{
+			return $.ajax({
+				url: `https://www.eventbriteapi.com/v3/events/${id}/`,
+				data: {
+		        	token: 'RFJVFZFYRORRQSOUJG2L'
+					},
 			method: "GET",
 			headers: {
 				"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
 			}
+			})
 		})
+
+		$.when(...deferreds).then(function(...rArray){
+			console.log(rArray)
+			var eventArr = rArray.map(function(el){
+				return el[0]}
+			) 
+			console.log(eventArr)
+		ReactDOM.render(<ListEvents events={eventArr}/>, document.querySelector('#container'))
+		})
+
+	// $.ajax({
+	// 		url: `https://www.eventbriteapi.com/v3/events/${getIdString}`,
+	// 		data: {
+	// 	        token: 'RFJVFZFYRORRQSOUJG2L'
+	// 			},
+	// 		method: "GET",
+	// 		headers: {
+	// 			"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
+	// 		}
+	// 	})
 
 		
 
