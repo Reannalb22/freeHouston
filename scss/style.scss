@@ -65,7 +65,7 @@
  */
 
 img {
-    width: 100%;
+    max-width: 100%;
 }
 /**
  * YOUR CODE HERE
@@ -113,7 +113,6 @@ img {
                     background-color:crimson;
                     z-index: 2;
                     opacity: 1;
-                    height: 174px;
                     margin-top: -14px;
                     padding: 10px;
                 }
@@ -138,7 +137,7 @@ img {
 
         h1 {
             text-align: center;
-            transform: translateY(200%);
+            margin-top: 300px;
             font-family: 'Oleo Script', cursive;
             font-size: 85px;
         }
@@ -235,7 +234,6 @@ div#aboutview{
                     background-color:crimson;
                     z-index: 2;
                     opacity: 1;
-                    height: 174px;
                     margin-top: -14px;
                     padding: 10px;
                 }
@@ -299,7 +297,6 @@ div#eventview {
                     background-color:crimson;
                     z-index: 2;
                     opacity: 1;
-                    height: 174px;
                     margin-top: -14px;
                     padding: 16px;
                 }
@@ -326,7 +323,7 @@ div#eventview {
     div#eventform{
         border: black 2px solid;
         width: 500px;
-        margin-left: auto;
+        margin: auto;
         text-align: center;
         p {
             font-size: 20px;

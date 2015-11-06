@@ -1,7 +1,7 @@
 // es5 and 6 polyfills, powered by babel
 require("babel/polyfill")
 let fetch = require('./fetcher')
-//this push super correct.
+//this push is correctooooo.
 var $ = require('jquery'),
 	Backbone = require('backbone'),
 	React = require('react'),
@@ -96,7 +96,7 @@ var HomeView = React.createClass({
 var TitleBar = React.createClass({
 	render: function(){
 		return(
-			<h1> Free Houston Events </h1>
+			<h1 className = "animated fadeInUp"> Free Houston Events </h1>
 		)
 	}
 })
@@ -129,6 +129,7 @@ var NavBar = React.createClass({
 				<div>
 					<input type = "checkbox" id = "dropButton"></input>
 					<ul id="dropdown-menu">
+				      <li><a href="#home">Home</a></li>
 				      <li><a href="#about">About</a></li>
 				      <li style={signUpStyle} ><a href="#sign">Log In</a></li>
 				      <li style={createEventStyle}><a href="#event">Create Event</a></li>
@@ -253,7 +254,7 @@ var AboutView = React.createClass({
 				<h3>About</h3>
 				<p id="firstpara">	Free Houston Events is where Houstonians go to find what's happening in Houston, for free. 
 				</p>
-				<p>	If you're a company, venue, bar, theater, non-profit, or individual, sign up to post all of your free events here. 
+				<p>	Sign up to post all of your free Houston events. Your event will post here and on Eventbrite for your convenience.  
 				</p>
 				<p>	Get noticed, and get yourself out there, Houston!
 				</p>
