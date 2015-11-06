@@ -1,7 +1,7 @@
 // es5 and 6 polyfills, powered by babel
 require("babel/polyfill")
 let fetch = require('./fetcher')
-
+//this push is correct.
 var $ = require('jquery'),
 	Backbone = require('backbone'),
 	React = require('react'),
@@ -109,8 +109,8 @@ var NavBar = React.createClass({
 					<input type = "checkbox" id = "dropButton"></input>
 					<ul id="dropdown-menu">
 				      <li><a href="#about">About</a></li>
-				      <li><a href="#createEvent">Create Event</a></li>
 				      <li><a href="#sign">Sign Up</a></li>
+				      <li><a href="#event">Create Event</a></li>
 				      <li><a href="#logout">Log Out</a></li>
 				    </ul>
 				</div>
@@ -118,6 +118,7 @@ var NavBar = React.createClass({
 		)
 	}
 })
+
 
 var SearchBar = React.createClass({
 	_searchHandler: function(event){
@@ -238,7 +239,7 @@ var AboutNav = React.createClass({
 					<input type = "checkbox" id = "dropButton"></input>
 					<ul id="dropdown-menu">
 				      <li><a href="#home">Home</a></li>
-				      <li><a href="#createEvent">Create Event</a></li>
+				      <li><a href="#event">Create Event</a></li>
 				      <li><a href="#sign">Sign Up</a></li>
 				      <li><a href="#logout">Log Out</a></li>
 				    </ul>
@@ -255,10 +256,11 @@ var SignPop = React.createClass({
 		return(
 			<div id="signView">
 				<h3>Log in to post free Houston events. Enter a new username and password to sign up</h3>
-				<SignEventbrite />
+				<SignBox sendUserInfo={this.props.sendUserInfo}/>
 			</div>
 		)
-				// <SignBox sendUserInfo={this.props.sendUserInfo}/>
+				
+				//<SignEventbrite />
 	}
 })
 
@@ -286,6 +288,7 @@ var SignBox = React.createClass({
 					}
 				).then(function(){
 					console.log('success!')
+					Backbone.navigate('event',{trigger:true})
 					location.hash = "event"
 				})
 			} 
@@ -314,13 +317,15 @@ var SignBox = React.createClass({
 	}
 })
 
-var SignEventbrite = React.createClass({
-	render: function(){
-		return(
-				<button><a href='https://www.eventbrite.com/oauth/authorize?response_type=token&client_id=XSX52YKC2DDMNF4D4Q'>Log In with Eventbrite</a></button>
-		)
-	}
-})
+//in order to have user sign themselves into eventbrite... right now I'm using my own account and I'm posting on user's behalf
+
+// var SignEventbrite = React.createClass({
+// 	render: function(){
+// 		return(
+// 				<button><a href='https://www.eventbrite.com/oauth/authorize?response_type=token&client_id=XSX52YKC2DDMNF4D4Q'>Log In with Eventbrite</a></button>
+// 		)
+// 	}
+// })
 
 var EventView = React.createClass({
 
@@ -341,6 +346,7 @@ var EventView = React.createClass({
 })
 
 var EventNavBar = React.createClass({
+	
 	render: function(){
 		return(
 			<div id="navButtons">
@@ -348,8 +354,7 @@ var EventNavBar = React.createClass({
 					<input type = "checkbox" id = "dropButton"></input>
 					<ul id="dropdown-menu">
 					  <li><a href="#home">Home</a></li>
-				      <li><a href="#createdEvents">My Created Events</a></li>
-				      <li><a href="#savedEvents">My Saved Events</a></li>
+				      <li><a href="#myCreatedEvents">My Created Events</a></li>
 				      <li><a href="#logout">Log Out</a></li>
 				    </ul>
 				</div>
@@ -357,6 +362,9 @@ var EventNavBar = React.createClass({
 		)
 	}
 })
+
+//another feature perhaps to add later
+//<li><a href="#savedEvents">My Saved Events</a></li>
 
 var Greeting = React.createClass({
 	render: function(){
@@ -376,39 +384,126 @@ var EventForm = React.createClass({
 	},
 
 	_handleUserData: function(){
-		var eventToSave = new Parse.Object("Event")
-		var date = new Date()
+		var r
+		$.ajax({
+			url: "https://www.eventbriteapi.com/v3/events/",
+			data: {
+		        'event.name.html': this._eventTitle    .getDOMNode().value,
+		        'event.start.utc': this._eventStartDate.getDOMNode().value + "T" + this._eventStartTime.getDOMNode().value + ":00Z",
+		        'event.end.utc'  : this._eventEndDate  .getDOMNode().value + "T" + this._eventEndTime.getDOMNode().value + ":00Z",
+		        'event.start.timezone': 'Africa/Nouakchott',
+		        'event.end.timezone': 'Africa/Nouakchott',
+		        'event.currency': 'USD',
+		        'event.description.html': this._eventDescription.getDOMNode().value, 
+		        'event.listed': true,
+		        'event.online_event': true,
+		        token: 'RFJVFZFYRORRQSOUJG2L'
+				},
+			method: "POST",
+			headers: {
+				"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
+			}
+		}).then((response)=> {
+			r=response
+			$.ajax({
+				url: `https://www.eventbriteapi.com/v3/events/${response.id}/ticket_classes/`,
+			data: {
+				'ticket_class.name': 'free',
+				'ticket_class.free': true,
+				'ticket_class.sales_start': this._eventStartDate.getDOMNode().value + "T" + this._eventStartTime.getDOMNode().value + ":00Z",
+				'ticket_class.quantity_total':this._ticketQuantity.getDOMNode().value,
+				token: 'RFJVFZFYRORRQSOUJG2L'
+				// 'ticket_class.sales_end': this._eventEndDate  .getDOMNode().value + "T" + this._eventEndTime.getDOMNode().value + ":00Z"
+			},
+				method: "POST",
+				headers: {
+					"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
+				}
+			}).then((response)=>{
+				$.ajax({
+					url: `https://www.eventbriteapi.com/v3/events/${response.event_id}/publish/`,
+					data:{
+						token: 'RFJVFZFYRORRQSOUJG2L'
+					},
+					method: "POST",
+					headers: {
+						"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
+					}
+				}).then((response)=>{
+					console.log(r)
+					let idArr = Parse.User.current().get('eventIds')
+					if (!idArr){
+						idArr = []
+					}
+					idArr.push(r.id)
 
-		eventToSave.set('title', this._eventTitle.getDOMNode().value)
-		eventToSave.set('location', this._eventLocation.getDOMNode().value)
-		eventToSave.set('start_date', this._eventStartDate.getDOMNode().value)
-		eventToSave.set('end_date', this._eventEndDate.getDOMNode().value)
-		eventToSave.set('start_time', this._eventStartTime.getDOMNode().value)
-		eventToSave.set('end_time', this._eventEndTime.getDOMNode().value)
-		eventToSave.set('event_description', this._eventDescription.getDOMNode().value)
+					Parse.User.current().set('eventIds',idArr)
+
+					Parse.User.current().save()
+
+				})
+			})
+		})
+	},
+//to do with eventId to see created events:
+// var idArr = user.get('id')
+
+// idArr.push(id)
+
+// user.set('id',idArr)
+		// fail(function(err1,err2){
+		// 	console.log(err1)
+		// 	console.log(err2)
+		// }).done(function(resp){
+		// 	console.log(resp)
+		// })
+
+		//if saving event to Parse: 
+		// var eventToSave = new Parse.Object("Event")
+		// var date = new Date()
+
+		// eventToSave.set('title', this._eventTitle.getDOMNode().value)
+		// eventToSave.set('location', this._eventLocation.getDOMNode().value)
+		// eventToSave.set('start_date', this._eventStartDate.getDOMNode().value)
+		// eventToSave.set('end_date', this._eventEndDate.getDOMNode().value)
+		// eventToSave.set('start_time', this._eventStartTime.getDOMNode().value)
+		// eventToSave.set('end_time', this._eventEndTime.getDOMNode().value)
+		// eventToSave.set('event_description', this._eventDescription.getDOMNode().value)
 
 	// var eventDataObject = {
 		// this.eventDataObject
 		
-		// console.log(eventDataObject)
-		eventToSave.save()
-	},
+		// console.log(eventDataObjeclt)
+		// eventToSave.save()
+	
 
 	render: function(){
 		return(
 			<div id="eventform">
-				<p>Event Title: <input ref={(c) => this._eventTitle = c} type="text"></input></p>
+				<p>Event Name: <input ref={(c) => this._eventTitle = c} type="text"></input></p>
 				<p>Location:    <input ref={(c) => this._eventLocation = c} type="text"></input></p>
 				<p>Start Date:  <input ref={(c) => this._eventStartDate = c} type="date"></input></p> 
 				<p>End Date:    <input ref={(c) => this._eventEndDate = c} type="date"></input></p> 
 				<p>Start Time:  <input ref={(c) => this._eventStartTime = c} type="time"></input></p> 
 				<p>End Time:    <input ref={(c) => this._eventEndTime = c} type="time"></input></p>
+				<p>Capacity:    <input ref={(c) => this._ticketQuantity = c} type="text"></input></p>
 				<p>Event Description: <textarea ref={(c) => this._eventDescription = c} rows="5"></textarea></p>
 				<button onClick={this._handleUserData} id="signup">Submit Event</button>
 			</div>
 		)
 	}
 })
+
+var myCreatedEventView= React.createClass({
+	render: function(){
+		return(
+			<div id="createView">
+				<ListEvents events = {this.props.events} />
+			</div>
+		)
+	}
+})
+
 
 
 
@@ -419,7 +514,8 @@ var freeRouter = Backbone.Router.extend({
 		
 		'details/:listing_id':'getDetails',
 		'logout':'logUserOut',
-		'createEvent':'createEvent',
+		'myCreatedEvents':'showMyEvents',
+		'event':'createEvent',
 		'about': 'getAbout',
 		'search/:date': 'showSearch',
 		'home':'getHome',
@@ -460,6 +556,7 @@ var freeRouter = Backbone.Router.extend({
 			})
 		return deferredObj
 	},
+
 	getSearch: function(date){
 		console.log('s')
 		var self = this,
@@ -495,11 +592,34 @@ var freeRouter = Backbone.Router.extend({
 		deferredObj.done(boundRender)
 	},
 
+	showMyEvents: function(){
+	
+		var getIdString = Parse.User.current().get('eventIds').join(',')
+
+	$.ajax({
+			url: `https://www.eventbriteapi.com/v3/events/search/?id=${getIdString}`,
+			data: {
+		        
+		        token: 'RFJVFZFYRORRQSOUJG2L'
+				},
+			method: "GET",
+			headers: {
+				"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
+			}
+		})
+
+		
+
+//arr.join(',')
+
+		// ReactDOM.render(<myCreatedEventView event={this.fm} />,
+		// 	document.querySelector('#container'))
+	},
+
 	getAbout: function(){
 		ReactDOM.render(<AboutView events={this.fc}/>,
 			document.querySelector('#container'))
 	},
-
 	getDetailData: function(listing_id){
 		console.log(this.fm)
 		this.fm.set('id', listing_id)
@@ -561,3 +681,30 @@ var freeRouter = Backbone.Router.extend({
 
 var freebie = new freeRouter
 
+
+// $.ajax({
+// 	url: "https://www.eventbriteapi.com/v3/events/",
+// 	data: {
+// 		        'event.name.html': 'tea_party',
+// 		        'event.start.utc': "2015-11-14T20:00:00Z",
+// 		        'event.end.utc': "2015-11-15T03:00:00Z",
+// 		        'event.start.timezone': 'Africa/Nouakchott',
+// 		        'event.end.timezone': 'Africa/Nouakchott',
+// 		        'event.currency': 'USD',
+// 		        'event.description.html': "let's have a tea party in africa", 
+// 		        'event.listed': true,
+// 		        'event.online_event': true,
+// 		        token: "RFJVFZFYRORRQSOUJG2L"
+// 		    },
+// 	method: "POST",
+// 	headers: {
+// 		"Authorization": "bearer RFJVFZFYRORRQSOUJG2L"
+// 	}
+// }).fail(function(err1,err2){
+// 	console.log(err1)
+// 	console.log(err2)
+// }).done(function(resp){
+// 	console.log(resp)
+// })
+
+// 2015-11-14T20:00:00Z how to format date and time
