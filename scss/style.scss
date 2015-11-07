@@ -65,68 +65,67 @@
  */
 
 img {
-    max-width: 100%;
+    max-width: 70%;
 }
 /**
  * YOUR CODE HERE
  */
 
-
-#homeView {
-      
-    div#navButtons{
-        background-color: fuchsia;
-        background-color: black;
-        color:white;
-        height: 60px;
-        position: fixed;
-        left:0px;
-        top:0px;
-        width: 100%;
-        text-align: right;
-        z-index: 2;
-            div{
-
-                font-size: 24px;
-                
-                input{
-                    width: 65px;
-                    height:60px;
-                    -webkit-appearance: none;
-                    background-color: crimson;
-                }
-                ul#dropdown-menu{
-                    list-style: none;
-                    position: relative;
-                    opacity: 0;
-                        li {
-                            text-align: center;
-                            a {
-                                color: black;
-                            }
-                        }
-                    z-index: 99;
-
-                }
-                input:checked + ul#dropdown-menu {
-
-                    background-color:crimson;
-                    z-index: 2;
-                    opacity: 1;
-                    margin-top: -14px;
-                    padding: 10px;
-                }
-            }
-
+     
+div#navButtons{
+    background-color: fuchsia;
+    background-color: black;
+    color:white;
+    height: 60px;
+    position: fixed;
+    left:0px;
+    top:0px;
+    width: 100%;
+    text-align: right;
+    z-index: 2;
         div{
-            display: inline-block;
 
-            h5{
-                color:white;
+            font-size: 24px;
+            
+            input{
+                width: 65px;
+                height:60px;
+                -webkit-appearance: none;
+                background-color: crimson;
+            }
+            ul#dropdown-menu{
+                list-style: none;
+                position: relative;
+                opacity: 0;
+                    li {
+                        text-align: center;
+                        a {
+                            color: black;
+                        }
+                    }
+                z-index: 99;
+
+            }
+            input:checked + ul#dropdown-menu {
+
+                background-color:crimson;
+                z-index: 2;
+                opacity: 1;
+                margin-top: -14px;
+                padding: 10px;
             }
         }
-    }
 
+    div{
+        display: inline-block;
+
+        h5{
+            color:white;
+        }
+    }
+}
+
+#homeView {
     div#titleBar{
         height: 100%;
         background-color: khaki;
@@ -195,54 +194,6 @@ div#aboutview{
     background-color: khaki;
     text-align: center;
     height: 900px;
-    
-    div#navButtons{
-        background-color: black;
-        color:white;
-        height: 60px;
-        position: fixed;
-        left:0px;
-        top:0px;
-        width: 100%;
-        text-align: right;
-        z-index: 2;
-            div{
-
-                font-size: 24px;
-                
-                input{
-                    width: 65px;
-                    height:60px;
-                    -webkit-appearance: none;
-                    background-color: crimson;
-                }
-                ul#dropdown-menu{
-                    list-style: none;
-                    position: relative;
-                    opacity: 0;
-                        li {
-                            text-align: center;
-                            a {
-                                color: black;
-                            }
-                        }
-                    z-index: 99;
-
-                }
-                input:checked + ul#dropdown-menu {
-
-                    background-color:crimson;
-                    z-index: 2;
-                    opacity: 1;
-                    margin-top: -14px;
-                    padding: 10px;
-                }
-            }
-
-        div{
-            display: inline-block;
-        }
-    }
 
     h3{
         margin-top: 60px;
@@ -260,51 +211,6 @@ div#aboutview{
 div#eventview {
     background-color: khaki; 
     height: 900px;
-    div#navButtons{
-        background-color: black;
-        color:white;
-        height: 60px;
-        position: fixed;
-        left:0px;
-        top:0px;
-        width: 100%;
-        text-align: right;
-        z-index: 2;
-            div{
-
-                font-size: 24px;
-                
-                input{
-                    width: 65px;
-                    height:60px;
-                    -webkit-appearance: none;
-                    background-color: crimson;
-                }
-                ul#dropdown-menu{
-                    list-style: none;
-                    position: relative;
-                    opacity: 0;
-                        li {
-                            text-align: center;
-                            a {
-                                color: black;
-                            }
-                        }
-                    z-index: 99;
-                }
-                input:checked + ul#dropdown-menu {
-
-                    background-color:crimson;
-                    z-index: 2;
-                    opacity: 1;
-                    margin-top: -14px;
-                    padding: 16px;
-                }
-            }
-        div{
-            display: inline-block;
-        }
-    }
 
     div#greeting{
         margin-top: 60px;
@@ -344,111 +250,30 @@ div#eventview {
 div#detailView {
     text-align: center;
     background-color: khaki;
-    height: 900px;
+    height: 1000px;
     
     div#details{
+        border: 2px solid blue;
+        width: 600px;
+        margin: auto;
         margin-top: 60px;
         padding: 40px;
         p#date {
             margin: 20px;
-            font-size: 25px;
+            font-size: 30px;
+        }
+        p#time {
+            padding: 10px;
+            font-size: 22px;
         }
         p#url{
             margin: 20px;
         }
     }
+}
     
-    div#navButtons{
-        background-color: black;
-        color:white;
-        height: 60px;
-        position: fixed;
-        left:0px;
-        top:0px;
-        width: 100%;
-        text-align: right;
-        z-index: 2;
-            div{
-
-                font-size: 24px;
-                
-                input{
-                    width: 65px;
-                    height:60px;
-                    -webkit-appearance: none;
-                    background-color: crimson;
-                }
-                ul#dropdown-menu{
-                    list-style: none;
-                    position: relative;
-                    opacity: 0;
-                        li {
-                            text-align: left;
-                            a {
-                                color: black;
-                            }
-                        }
-                    z-index: 99;
-
-                }
-                input:checked + ul#dropdown-menu {
-
-                    background-color:crimson;
-                    z-index: 2;
-                    opacity: 1;
-                    margin-top: -14px;
-                    padding: 10px;
-                }
-            }
-        div{
-            display: inline-block;
-        }
-    }
-}
-
-#container{
-    div#listEvent{
-            font-size: 25px;
-            font-family: Palatino, Arial;
-            cursor: pointer;
-        }
-}
-
-// div#myCreated{
-//     margin-top: 1000px;
-//     position: relative;
-//     background-color: cadetblue;
-//     text-align: center;
-//     font-size: 25px;
-//     font-family: Palatino, Arial;
-//     border: dashed lightgray;
-//     padding: 2px;
-//     text-align: center;
-//     margin: 30px;   
-// }
 
 
-
-
-// .fade-leave {
-//   opacity: 1;
-// }
-// .fade-leave.fade-leave-active {
-//   opacity: 0.01;
-//   transition: opacity .1s ease-in;
-// }
- 
-// .fade-enter {
-//   opacity: 0.01;
-// }
-// .fade-enter.fade-enter-active {
-//   opacity: 1;
-//   transition: opacity .2s ease-in;
-// }
- 
-// .fade-height {
-//   transition: height .15s ease-in-out;
-// }
 
 
 

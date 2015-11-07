@@ -203,6 +203,7 @@ var ListEvents = React.createClass({
 
 var DetailsView = React.createClass({
 	render: function(){
+		console.log(this.props.event)
 		return(
 			<div id="detailView">
 				<NavBar />
@@ -215,9 +216,7 @@ var DetailsView = React.createClass({
 var Details = React.createClass({
 	render: function(){
 		var name = this.props.event.attributes.name.text
-		
-		var url = this.props.event.attributes.url
-
+	
 		var start = new Date(this.props.event.attributes.start.local)
 		var sDate = start.toLocaleDateString()
 		
@@ -225,8 +224,17 @@ var Details = React.createClass({
 		
 		var end = new Date(this.props.event.attributes.end.local)
 		var eDate = end.toLocaleDateString()
+
+		var finalDate
+
+		if (sDate === eDate){
+			finalDate = sDate
+		}
+		else finalDate = "{sDate} to {eDate}" 
 		
 		var eTime = end.toLocaleTimeString().replace(':00', '')
+
+		var description = this.props.event.attributes.description.text
 		
 		var logo
 		if(this.props.event.attributes.logo) {
@@ -238,8 +246,9 @@ var Details = React.createClass({
 			<div id="details">
 				<h3>{name}</h3>
 				<img src = {logo} />
-				<p id="date"><strong>{sDate} {sTime} to {eDate} {eTime}</strong></p>
-				<p id="url"> <strong>Find Out More at:</strong> <a href = {url}> {url} </a></p>
+				<p id="date"><strong>{finalDate} </strong></p>
+				<p id="time"><strong>{sTime} to {eTime} </strong></p>
+				<p id="description">{description}</p>
 			</div>
 		)
 	}
@@ -258,24 +267,6 @@ var AboutView = React.createClass({
 				</p>
 				<p>	Get noticed, and get yourself out there, Houston!
 				</p>
-			</div>
-		)
-	}
-})
-
-var AboutNav = React.createClass({
-	render: function(){
-		return(
-			<div id="navButtons">
-				<div>
-					<input type = "checkbox" id = "dropButton"></input>
-					<ul id="dropdown-menu">
-				      <li><a href="#home">Home</a></li>
-				      <li><a href="#event">Create Event</a></li>
-				      <li><a href="#sign">Sign Up</a></li>
-				      <li><a href="#logout">Log Out</a></li>
-				    </ul>
-				</div>
 			</div>
 		)
 	}
@@ -377,23 +368,6 @@ var EventView = React.createClass({
 	}
 })
 
-// var EventNavBar = React.createClass({
-	
-// 	render: function(){
-// 		return(
-// 			<div id="navButtons">
-// 				<div>
-// 					<input type = "checkbox" id = "dropButton"></input>
-// 					<ul id="dropdown-menu">
-// 					  <li><a href="#home">Home</a></li>
-// 				      <li><a href="#myCreatedEvents">My Created Events</a></li>
-// 				      <li><a href="#logout">Log Out</a></li>
-// 				    </ul>
-// 				</div>
-// 			</div>
-// 		)
-// 	}
-// })
 
 //another feature perhaps to add later
 //<li><a href="#savedEvents">My Saved Events</a></li>
