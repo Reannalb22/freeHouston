@@ -69,7 +69,6 @@ var HomeView = React.createClass({
 	},
 	render: function(){
 
-		console.log(this.props.events)
 		return (
 			<div id="homeView">
 				<NavBar />
@@ -96,7 +95,7 @@ var HomeView = React.createClass({
 var TitleBar = React.createClass({
 	render: function(){
 		return(
-			<h1 className = "animated fadeInUp"> Free Houston Events </h1>
+			<h1 className = "animated fadeInUp"> H-Town Underground </h1>
 		)
 	}
 })
@@ -260,13 +259,19 @@ var AboutView = React.createClass({
 		return (
 			<div id="aboutview">
 				<NavBar />
-				<h3>About</h3>
-				<p id="firstpara">	Free Houston Events is where Houstonians go to find what's happening in Houston, for free. 
-				</p>
-				<p>	Sign up to post all of your free Houston events. Your event will post here and on Eventbrite for your convenience.  
-				</p>
-				<p>	Get noticed, and get yourself out there, Houston!
-				</p>
+				<div id="movieDiv">
+					<video controls muted autoPlay loop poster = './images/freeHouston_vid/girl.jpg'>
+						<source src = './images/freeHouston_vid/dance.mp4' />
+					</video>
+				</div>
+				<div id="aboutDiv">
+					<h3>Why HTU?</h3>
+					<p>	H-Town Underground is where Houstonians go to find what's happening in Houston, for free. No more guessing, planning, or Googling-- your spur of the moment plans have just been made. 
+					Know of an awesome free event happening in Houston? Putting on a sweet event loaded with freebies? Allowing no cover until a certain time? Sign up to post all of your free Houston events here. Bonus: 
+					H-Town Underground's mission is to get these fantastic freebies out in the open, so your event will post here and on Eventbrite for your convenience.  
+					Get noticed, and get yourself out there, Houston!
+					</p>
+				</div>
 			</div>
 		)
 	}
