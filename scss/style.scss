@@ -129,7 +129,7 @@ div#navButtons{
 #homeView {
     div#titleBar{
         height: 100%;
-        background: url(./images/freeHouston_vid/girl.jpg) no-repeat center center fixed;
+        background: url(./images/freeHouston_vid/sun.png) no-repeat center center fixed;
         background-size: cover;
         -webkit-background-size: cover;
         -moz-background-size: cover;
@@ -140,8 +140,9 @@ div#navButtons{
         width:100%;
 
         h1 {
+            color: white;
             text-align: center;
-            margin-top: 440px;
+            margin-top: 385px;
             font-family: 'Bree Serif', serif;
             // font-family: 'Oleo Script', cursive;
             font-size: 85px;

@@ -260,15 +260,15 @@ var AboutView = React.createClass({
 			<div id="aboutview">
 				<NavBar />
 				<div id="movieDiv">
-					<video controls muted autoPlay loop poster = './images/freeHouston_vid/girl.jpg'>
+					<video controls muted autoPlay loop poster = './images/freeHouston_vid/sun.png'>
 						<source src = './images/freeHouston_vid/dance.mp4' />
 					</video>
 				</div>
 				<div id="aboutDiv">
 					<h3>Why HTU?</h3>
 					<p>	H-Town Underground is where Houstonians go to find what's happening in Houston, for free. No more guessing, planning, or Googling-- your spur of the moment plans have just been made. 
-					Know of an awesome free event happening in Houston? Putting on a sweet event loaded with freebies? Allowing no cover until a certain time? Sign up to post all of your free Houston events here. Bonus: 
-					H-Town Underground's mission is to get these fantastic freebies out in the open, so your event will post here and on Eventbrite for your convenience.  
+					Know of an awesome free event happening in Houston? Giving out freebies? Allowing no cover until a certain time? Sign up to post all of your free Houston events here. 
+					Bonus: H-Town Underground's mission is to get these fantastic freebies out in the open, so your event will post here and on Eventbrite for your convenience. 
 					Get noticed, and get yourself out there, Houston!
 					</p>
 				</div>
