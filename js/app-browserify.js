@@ -132,7 +132,6 @@ var NavBar = React.createClass({
 				      <li><a href="#about">About</a></li>
 				      <li style={signUpStyle} ><a href="#sign">Log In</a></li>
 				      <li style={createEventStyle}><a href="#event">Create Event</a></li>
-				      <li style={myEventsStyle}><a href="#myCreatedEvents">My Created Events</a></li>
 				      <li style={logOutStyle} ><a href="#logout">Log Out</a></li>
 				    </ul>
 				</div>
@@ -141,6 +140,8 @@ var NavBar = React.createClass({
 	}
 })
 
+//feature to add later
+//<li style={myEventsStyle}><a href="#myCreatedEvents">My Created Events</a></li>
 
 var SearchBar = React.createClass({
 	_searchHandler: function(event){
@@ -216,20 +217,22 @@ var Details = React.createClass({
 	render: function(){
 		var name = this.props.event.attributes.name.text
 	
-		var start = new Date(this.props.event.attributes.start.local)
+		var start = new Date(this.props.event.attributes.start.local) 
 		var sDate = start.toLocaleDateString()
+		console.log(start)
 		
 		var sTime = start.toLocaleTimeString().replace(':00', '')
 		
-		var end = new Date(this.props.event.attributes.end.local)
+		var end = new Date(this.props.event.attributes.end.local) 
 		var eDate = end.toLocaleDateString()
+		console.log(end)
 
 		var finalDate
 
 		if (sDate === eDate){
 			finalDate = sDate
 		}
-		else finalDate = "{sDate} to {eDate}" 
+		else finalDate = `${sDate} to ${eDate}`
 		
 		var eTime = end.toLocaleTimeString().replace(':00', '')
 
@@ -252,6 +255,7 @@ var Details = React.createClass({
 		)
 	}
 })
+
 
 
 var AboutView = React.createClass({
@@ -302,6 +306,7 @@ var SignBox = React.createClass({
 		if (event.target.id === "signup"){
 			newusr.set('username',username)
 			newusr.set('password', password)
+			// make api call to 
 			newusr.signUp().then(
 				function(){
 					console.log("signed up!")
@@ -407,7 +412,7 @@ var EventForm = React.createClass({
 		        'event.currency': 'USD',
 		        'event.description.html': this._eventDescription.getDOMNode().value, 
 		        'event.listed': true,
-		        'event.online_event': true,
+		        'event.online_event': false,
 		        token: 'RFJVFZFYRORRQSOUJG2L'
 				},
 			method: "POST",
@@ -491,30 +496,46 @@ var EventForm = React.createClass({
 	render: function(){
 		return(
 			<div id="eventform">
-				<p>Event Name: <input ref={(c) => this._eventTitle = c} type="text"></input></p>
-				<p>Location:    <input ref={(c) => this._eventLocation = c} type="text"></input></p>
-				<p>Start Date:  <input ref={(c) => this._eventStartDate = c} type="date"></input></p> 
-				<p>End Date:    <input ref={(c) => this._eventEndDate = c} type="date"></input></p> 
-				<p>Start Time:  <input ref={(c) => this._eventStartTime = c} type="time"></input></p> 
-				<p>End Time:    <input ref={(c) => this._eventEndTime = c} type="time"></input></p>
-				<p>Capacity:    <input ref={(c) => this._ticketQuantity = c} type="text"></input></p>
-				<p>Event Description: <textarea ref={(c) => this._eventDescription = c} rows="5"></textarea></p>
+				<div>
+					<div id="titles">
+						<p>Event Name</p>
+						<p>Location</p>
+						<p>Start Date</p>
+						<p>End Date</p>
+						<p>Start Time</p>
+						<p>End Time</p>
+						<p>Capacity</p>
+						<p>Event Description</p>
+					</div>
+
+					<div id="inputs">
+						<p> <input ref={(c) => this._eventTitle = c} type="text"></input></p>
+						<p>   <input ref={(c) => this._eventLocation = c} type="text"></input></p>
+						<p>  <input ref={(c) => this._eventStartDate = c} type="date"></input></p> 
+						<p>    <input ref={(c) => this._eventEndDate = c} type="date"></input></p> 
+						<p> <input ref={(c) => this._eventStartTime = c} type="time"></input></p> 
+						<p>    <input ref={(c) => this._eventEndTime = c} type="time"></input></p>
+						<p>    <input ref={(c) => this._ticketQuantity = c} type="text"></input></p>
+						<p> <textarea ref={(c) => this._eventDescription = c} rows="5"></textarea></p>
+					</div>
+				</div>
+				
 				<button onClick={this._handleUserData} id="signup">Submit Event</button>
 			</div>
 		)
 	}
 })
 
-var myCreatedEventView= React.createClass({
-	render: function(){
-		return(
-			<div id="myCreated">
-				<NavBar />
-				<ListEvents events = {this.props.events} />
-			</div>
-		)
-	}
-})
+// var myCreatedEventView= React.createClass({
+// 	render: function(){
+// 		return(
+// 			<div id="myCreated">
+// 				<NavBar />
+// 				<ListEvents events = {this.props.events} />
+// 			</div>
+// 		)
+// 	}
+// })
 
 
 
@@ -528,7 +549,7 @@ var freeRouter = Backbone.Router.extend({
 		
 		'details/:listing_id':'getDetails',
 		'logout':'logUserOut',
-		'myCreatedEvents':'showMyEvents',
+		// 'myCreatedEvents':'showMyEvents',
 		'event':'createEvent',
 		'about': 'getAbout',
 		'search/:date': 'showSearch',
@@ -606,30 +627,31 @@ var freeRouter = Backbone.Router.extend({
 		deferredObj.done(boundRender)
 	},
 
-	showMyEvents: function(){
+	//need to change this logic to get organizer id (created at login) to reduce the amount of fetches to eventbrite
+	// showMyEvents: function(){
 	
-		var eventIdsArr = Parse.User.current().get('eventIds')
-		var deferreds = eventIdsArr.map(id =>{
-			return $.ajax({
-				url: `https://www.eventbriteapi.com/v3/events/${id}/`,
-				data: {
-		        	token: 'RFJVFZFYRORRQSOUJG2L'
-					},
-			method: "GET",
-			headers: {
-				"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
-			}
-			})
-		})
+	// 	var eventIdsArr = Parse.User.current().get('eventIds')
+	// 	var deferreds = eventIdsArr.map(id =>{
+	// 		return $.ajax({
+	// 			url: `https://www.eventbriteapi.com/v3/events/${id}/`,
+	// 			data: {
+	// 	        	token: 'RFJVFZFYRORRQSOUJG2L'
+	// 				},
+	// 		method: "GET",
+	// 		headers: {
+	// 			"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
+	// 		}
+	// 		})
+	// 	})
 
-		$.when(...deferreds).then(function(...rArray){
-			console.log(rArray)
-			var eventArr = rArray.map(function(el){
-				return el[0]}
-			) 
-			console.log(eventArr)
-		ReactDOM.render(<ListEvents events={eventArr}/>, document.querySelector('#container'))
-		})
+	// 	$.when(...deferreds).then(function(...rArray){
+	// 		console.log(rArray)
+	// 		var eventArr = rArray.map(function(el){
+	// 			return el[0]}
+	// 		) 
+	// 		console.log(eventArr)
+	// 	ReactDOM.render(<ListEvents events={eventArr}/>, document.querySelector('#container'))
+	// 	})
 
 		// 
 
@@ -650,7 +672,7 @@ var freeRouter = Backbone.Router.extend({
 
 		// ReactDOM.render(<myCreatedEventView event={this.fm} />,
 		// 	document.querySelector('#container'))
-	},
+	// },
 
 	getAbout: function(){
 		ReactDOM.render(<AboutView events={this.fc}/>,
@@ -699,12 +721,18 @@ var freeRouter = Backbone.Router.extend({
 		ReactDOM.render(<HomeView events={this.fc}/>, document.querySelector('#container'))
 	},
 
-	getHome: function(){
+	getParseData: function(){
 		
-		var boundRender = this.renderApp.bind(this)
-		var deferredObj = this.getHomeData()
-			deferredObj.done(boundRender)
 	},
+
+	getHome: function(){
+		var boundRender = this.renderApp.bind(this)
+		var eventBriteDeferred = this.getHomeData()
+		var parseDeferred = this.getParseData()
+		$.when(eventBriteDeferred,parseDeferred).done(boundRender)
+	},
+
+
 
 
 	initialize: function(){
