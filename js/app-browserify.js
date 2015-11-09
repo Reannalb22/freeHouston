@@ -45,12 +45,18 @@ var freeModel = Backbone.Model.extend({
 		return `https://www.eventbriteapi.com/v3/events/${this.get('id')}/`
 	},
 
+	parse: function(response){
+		return {
+			name: response.name.text,
+			description: response.description.text,
+			start: response.start.local,
+			end: response.end.local,
+			logo: response.logo.url
+		}
+	},
+
 	token: 'CSHMIFYCN4CU3GOWHR5C'
 
-	// parse: function(responseData){
-	// 	// console.log(responseData)
-	// 	return responseData.events
-	// }
 })
 
 
@@ -215,15 +221,15 @@ var DetailsView = React.createClass({
 
 var Details = React.createClass({
 	render: function(){
-		var name = this.props.event.attributes.name.text
+		var name = this.props.event.attributes.name
 	
-		var start = new Date(this.props.event.attributes.start.local) 
+		var start = new Date(this.props.event.attributes.start) 
 		var sDate = start.toLocaleDateString()
 		console.log(start)
 		
 		var sTime = start.toLocaleTimeString().replace(':00', '')
 		
-		var end = new Date(this.props.event.attributes.end.local) 
+		var end = new Date(this.props.event.attributes.end) 
 		var eDate = end.toLocaleDateString()
 		console.log(end)
 
@@ -236,11 +242,11 @@ var Details = React.createClass({
 		
 		var eTime = end.toLocaleTimeString().replace(':00', '')
 
-		var description = this.props.event.attributes.description.text
+		var description = this.props.event.attributes.description
 		
 		var logo
 		if(this.props.event.attributes.logo) {
-			logo = this.props.event.attributes.logo.url
+			logo = this.props.event.attributes.logo
 		}
 		else logo = 'https://upload.wikimedia.org/wikipedia/commons/4/44/Panoramic_Houston_skyline.jpg'
 		
@@ -400,98 +406,19 @@ var EventForm = React.createClass({
 	},
 
 	_handleUserData: function(){
-		var r
-		$.ajax({
-			url: "https://www.eventbriteapi.com/v3/events/",
-			data: {
-		        'event.name.html': this._eventTitle    .getDOMNode().value,
-		        'event.start.utc': this._eventStartDate.getDOMNode().value + "T" + this._eventStartTime.getDOMNode().value + ":00Z",
-		        'event.end.utc'  : this._eventEndDate  .getDOMNode().value + "T" + this._eventEndTime.getDOMNode().value + ":00Z",
-		        'event.start.timezone': 'Africa/Nouakchott',
-		        'event.end.timezone': 'Africa/Nouakchott',
-		        'event.currency': 'USD',
-		        'event.description.html': this._eventDescription.getDOMNode().value, 
-		        'event.listed': true,
-		        'event.online_event': false,
-		        token: 'RFJVFZFYRORRQSOUJG2L'
-				},
-			method: "POST",
-			headers: {
-				"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
-			}
-		}).then((response)=> {
-			r=response
-			$.ajax({
-				url: `https://www.eventbriteapi.com/v3/events/${response.id}/ticket_classes/`,
-			data: {
-				'ticket_class.name': 'free',
-				'ticket_class.free': true,
-				'ticket_class.sales_start': this._eventStartDate.getDOMNode().value + "T" + this._eventStartTime.getDOMNode().value + ":00Z",
-				'ticket_class.quantity_total':this._ticketQuantity.getDOMNode().value,
-				token: 'RFJVFZFYRORRQSOUJG2L'
-				// 'ticket_class.sales_end': this._eventEndDate  .getDOMNode().value + "T" + this._eventEndTime.getDOMNode().value + ":00Z"
-			},
-				method: "POST",
-				headers: {
-					"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
-				}
-			}).then((response)=>{
-				$.ajax({
-					url: `https://www.eventbriteapi.com/v3/events/${response.event_id}/publish/`,
-					data:{
-						token: 'RFJVFZFYRORRQSOUJG2L'
-					},
-					method: "POST",
-					headers: {
-						"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
-					}
-				}).then((response)=>{
-					console.log(r)
-					let idArr = Parse.User.current().get('eventIds')
-					if (!idArr){
-						idArr = []
-					}
-					idArr.push(r.id)
 
-					Parse.User.current().set('eventIds',idArr)
+		var eventToSave = new Parse.Object("Event")
+		var date = new Date()
 
-					Parse.User.current().save()
+			eventToSave.set('username', Parse.User.current().id)
+			eventToSave.set('name', this._eventTitle.getDOMNode().value)
+			eventToSave.set('location', this._eventLocation.getDOMNode().value)
+			eventToSave.set('start', this._eventStartDate.getDOMNode().value + "T" + this._eventStartTime.getDOMNode().value + ":00Z")
+			eventToSave.set('end', this._eventEndDate.getDOMNode().value + "T" + this._eventEndTime.getDOMNode().value + ":00Z")
+			eventToSave.set('description', this._eventDescription.getDOMNode().value)
 
-				})
-			})
-		})
+		eventToSave.save()
 	},
-//to do with eventId to see created events:
-// var idArr = user.get('id')
-
-// idArr.push(id)
-
-// user.set('id',idArr)
-		// fail(function(err1,err2){
-		// 	console.log(err1)
-		// 	console.log(err2)
-		// }).done(function(resp){
-		// 	console.log(resp)
-		// })
-
-		//if saving event to Parse: 
-		// var eventToSave = new Parse.Object("Event")
-		// var date = new Date()
-
-		// eventToSave.set('title', this._eventTitle.getDOMNode().value)
-		// eventToSave.set('location', this._eventLocation.getDOMNode().value)
-		// eventToSave.set('start_date', this._eventStartDate.getDOMNode().value)
-		// eventToSave.set('end_date', this._eventEndDate.getDOMNode().value)
-		// eventToSave.set('start_time', this._eventStartTime.getDOMNode().value)
-		// eventToSave.set('end_time', this._eventEndTime.getDOMNode().value)
-		// eventToSave.set('event_description', this._eventDescription.getDOMNode().value)
-
-	// var eventDataObject = {
-		// this.eventDataObject
-		
-		// console.log(eventDataObjeclt)
-		// eventToSave.save()
-	
 
 	render: function(){
 		return(
@@ -509,22 +436,21 @@ var EventForm = React.createClass({
 					</div>
 
 					<div id="inputs">
-						<p> <input ref={(c) => this._eventTitle = c} type="text"></input></p>
-						<p>   <input ref={(c) => this._eventLocation = c} type="text"></input></p>
+						<p>  <input ref={(c) => this._eventTitle = c} type="text"></input></p>
+						<p>  <input ref={(c) => this._eventLocation = c} type="text"></input></p>
 						<p>  <input ref={(c) => this._eventStartDate = c} type="date"></input></p> 
-						<p>    <input ref={(c) => this._eventEndDate = c} type="date"></input></p> 
-						<p> <input ref={(c) => this._eventStartTime = c} type="time"></input></p> 
-						<p>    <input ref={(c) => this._eventEndTime = c} type="time"></input></p>
-						<p>    <input ref={(c) => this._ticketQuantity = c} type="text"></input></p>
-						<p> <textarea ref={(c) => this._eventDescription = c} rows="5"></textarea></p>
+						<p>  <input ref={(c) => this._eventEndDate = c} type="date"></input></p> 
+						<p>  <input ref={(c) => this._eventStartTime = c} type="time"></input></p> 
+						<p>  <input ref={(c) => this._eventEndTime = c} type="time"></input></p>
+						<p>  <textarea ref={(c) => this._eventDescription = c} rows="5"></textarea></p>
 					</div>
 				</div>
 				
 				<button onClick={this._handleUserData} id="signup">Submit Event</button>
 			</div>
-		)
+		)}
 	}
-})
+)
 
 // var myCreatedEventView= React.createClass({
 // 	render: function(){
@@ -592,6 +518,28 @@ var freeRouter = Backbone.Router.extend({
 		return deferredObj
 	},
 
+	getParseData: function(date){
+		if (!date){
+
+			var today = new Date()
+			var month = today.getMonth()
+			var day = today.getDate()
+			if (month.length < 2){
+				var month = '0' + today.getMonth() 
+			}
+
+			if (day.length < 2){
+				var day = '0' + today.getDate()
+			}
+			
+			date = today.getFullYear() + "-" + month + "-" + day 
+			}
+		// var Event = Parse.Object.extend("Event");
+		var query = new Parse.Query("Event")
+		query.contains('start',date)
+		return query.find()
+	},
+
 	getSearch: function(date){
 		console.log('s')
 		var self = this,
@@ -606,6 +554,7 @@ var freeRouter = Backbone.Router.extend({
 		newDate.setDate(newDate.getDate()+1)
 		var end = JSON.stringify(newDate);
 
+// pDeffered=getParseData(date)
 			
 		var deferredObj = this.fc.fetch({
 			data: {
@@ -616,9 +565,9 @@ var freeRouter = Backbone.Router.extend({
 			processData: true,
 			dataType:'json'
 		})
+
 		return deferredObj
 	},
-
 
 	showSearch: function(date){
 		var boundRender = this.renderApp.bind(this)
@@ -626,53 +575,6 @@ var freeRouter = Backbone.Router.extend({
 		var deferredObj = this.getSearch(date)
 		deferredObj.done(boundRender)
 	},
-
-	//need to change this logic to get organizer id (created at login) to reduce the amount of fetches to eventbrite
-	// showMyEvents: function(){
-	
-	// 	var eventIdsArr = Parse.User.current().get('eventIds')
-	// 	var deferreds = eventIdsArr.map(id =>{
-	// 		return $.ajax({
-	// 			url: `https://www.eventbriteapi.com/v3/events/${id}/`,
-	// 			data: {
-	// 	        	token: 'RFJVFZFYRORRQSOUJG2L'
-	// 				},
-	// 		method: "GET",
-	// 		headers: {
-	// 			"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
-	// 		}
-	// 		})
-	// 	})
-
-	// 	$.when(...deferreds).then(function(...rArray){
-	// 		console.log(rArray)
-	// 		var eventArr = rArray.map(function(el){
-	// 			return el[0]}
-	// 		) 
-	// 		console.log(eventArr)
-	// 	ReactDOM.render(<ListEvents events={eventArr}/>, document.querySelector('#container'))
-	// 	})
-
-		// 
-
-	// $.ajax({
-	// 		url: `https://www.eventbriteapi.com/v3/events/${getIdString}`,
-	// 		data: {
-	// 	        token: 'RFJVFZFYRORRQSOUJG2L'
-	// 			},
-	// 		method: "GET",
-	// 		headers: {
-	// 			"Authorization": "Bearer RFJVFZFYRORRQSOUJG2L"
-	// 		}
-	// 	})
-
-		
-
-//arr.join(',')
-
-		// ReactDOM.render(<myCreatedEventView event={this.fm} />,
-		// 	document.querySelector('#container'))
-	// },
 
 	getAbout: function(){
 		ReactDOM.render(<AboutView events={this.fc}/>,
@@ -721,15 +623,16 @@ var freeRouter = Backbone.Router.extend({
 		ReactDOM.render(<HomeView events={this.fc}/>, document.querySelector('#container'))
 	},
 
-	getParseData: function(){
-		
-	},
 
 	getHome: function(){
 		var boundRender = this.renderApp.bind(this)
 		var eventBriteDeferred = this.getHomeData()
 		var parseDeferred = this.getParseData()
-		$.when(eventBriteDeferred,parseDeferred).done(boundRender)
+		$.when(eventBriteDeferred, parseDeferred).then(function(){
+			alert('both queries finished!')
+			console.log(arguments)
+			window.arguments
+		})
 	},
 
 
