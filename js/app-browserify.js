@@ -10,6 +10,7 @@ var $ = require('jquery'),
 	Parse = require('parse')
 	// ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 console.log('loaded')
+window.pp=[]
 window.Parse = Parse
 window.React = React
 window.$=$
@@ -50,18 +51,14 @@ var freeModel = Backbone.Model.extend({
 
 	token: 'CSHMIFYCN4CU3GOWHR5C'
 })
-
 var freeCollection = Backbone.Collection.extend({
 	url:'https://www.eventbriteapi.com/v3/events/search/?venue.city=Houston&price=free',
 	token:'CSHMIFYCN4CU3GOWHR5C',
 	model: freeModel,
 	parse: function(responseData){
-		return responseData.events
+		return responseData.events//.map(r=>{r.source='ebrite';return r})
 	}
 })
-
-
-
 var HomeView = React.createClass({
 
 	getInitialState: function(){
@@ -98,8 +95,6 @@ var HomeView = React.createClass({
 		)
 	}
 })
-
-
 var TitleBar = React.createClass({
 	render: function(){
 		return(
@@ -107,7 +102,6 @@ var TitleBar = React.createClass({
 		)
 	}
 })
-
 var NavBar = React.createClass({
 	render: function(){
 
@@ -166,24 +160,24 @@ var SearchBar = React.createClass({
 		)
 	}
 })
-
-
-var Event= React.createClass({
+var Event = React.createClass({
 	
 	_clickEvent: function(event){
 		var detailClick = event.target,
-			detailId = detailClick.id;
-		location.hash = `details/${detailId}`
+			detailId = detailClick.id,//||detailClick.objectId;
+			source = this.props.data.get("source")()
+		location.hash = `details/${source}/${detailId}`
 	},
 
 	render: function(){
+		window.pp.push(this.props)
 		console.log(this.props)
 		// if(this.props.data.attributes){
 		var id
 			if(this.props.data.attributes.id){
 				id = this.props.data.get('id')
 			} else {
-				id = this.props.data.get('objectId')
+				id = this.props.data.id//.get('objectId')
 			}
 		
 		var name = this.props.data.get("name")
@@ -199,7 +193,6 @@ var Event= React.createClass({
 		)
 	}
 })
-
 var ListEvents = React.createClass({
 	
 	_renderEvent: function(eventObj){
@@ -210,11 +203,10 @@ var ListEvents = React.createClass({
 	render: function(){
 		var events = this.props.events, 
 			componentArray = events.map(this._renderEvent)
-// console.log(events)
+	// console.log(events)
 		return <div id = "listEvent">{componentArray}</div>
 	}
 })
-
 var DetailsView = React.createClass({
 	render: function(){
 		console.log(this.props.event)
@@ -226,7 +218,6 @@ var DetailsView = React.createClass({
 		)
 	}
 })
-
 var Details = React.createClass({
 	render: function(){
 		var name = this.props.event.attributes.name
@@ -269,9 +260,6 @@ var Details = React.createClass({
 		)
 	}
 })
-
-
-
 var AboutView = React.createClass({
 	render: function(){
 		return (
@@ -293,10 +281,7 @@ var AboutView = React.createClass({
 		)
 	}
 })
-
 //<p id="vidcred.">Video Credit: Remy Golinelli</p>
-
-
 var SignPop = React.createClass({
 
 	render: function(){
@@ -364,7 +349,6 @@ var SignBox = React.createClass({
 		)
 	}
 })
-
 //in order to have user sign themselves into eventbrite... right now I'm using my own account and I'm posting on user's behalf
 
 // var SignEventbrite = React.createClass({
@@ -374,7 +358,6 @@ var SignBox = React.createClass({
 // 		)
 // 	}
 // })
-
 var EventView = React.createClass({
 
 	componentWillMount: function(){
@@ -392,8 +375,6 @@ var EventView = React.createClass({
 		)
 	}
 })
-
-
 //another feature perhaps to add later
 //<li><a href="#savedEvents">My Saved Events</a></li>
 
@@ -407,7 +388,6 @@ var Greeting = React.createClass({
 		)
 	}
 })
-
 var EventForm = React.createClass({
 	
 	componentWillMount: function(){
@@ -481,7 +461,7 @@ var EventForm = React.createClass({
 var freeRouter = Backbone.Router.extend({
 	routes: {
 		
-		'details/:listing_id':'getDetails',
+		'details/:source/:listing_id':'getDetails',
 		'logout':'logUserOut',
 		// 'myCreatedEvents':'showMyEvents',
 		'event':'createEvent',
@@ -493,7 +473,7 @@ var freeRouter = Backbone.Router.extend({
 	},
 
 	signup:function (argument) {
-	// body...
+		// body...
 		ReactDOM.render(<HomeView showLogin={true} events={this.fc}/>, document.querySelector('#container'))
 
 	},
@@ -562,7 +542,7 @@ var freeRouter = Backbone.Router.extend({
 		newDate.setDate(newDate.getDate()+1)
 		var end = JSON.stringify(newDate);
 
-// pDeffered=getParseData(date)
+		// pDeffered=getParseData(date)
 			
 		var deferredObj = this.fc.fetch({
 			data: {
@@ -588,6 +568,8 @@ var freeRouter = Backbone.Router.extend({
 		ReactDOM.render(<AboutView events={this.fc}/>,
 			document.querySelector('#container'))
 	},
+
+	//parse query, query.find
 	getDetailData: function(listing_id){
 		console.log(this.fm)
 		this.fm.set('id', listing_id)
@@ -610,13 +592,36 @@ var freeRouter = Backbone.Router.extend({
 			
 	},
 
-	getDetails: function(listing_id){
+	getParseDetails: function(listing_id){
+		var query = new Parse.Query("Event")
+		query.contains('objectId',listing_id)
+		return query.find()
+	},
+
+	renderParseDetails: function(){
+		ReactDOM.render(<DetailsView />, document.querySelector('#container'))
+	},
+
+	//set getDetails up like you did getHome
+	getDetails: function(source,listing_id){
+		
+		
 		var boundRender = this.renderDetails.bind(this)
-		var deferredObj = this.getDetailData(listing_id)
-		deferredObj.done(function(){
-			console.log('here comes the deets')
-			boundRender()
-		})
+		if (source === 'p'){
+			var parseDeferred = this.getParseDetails(listing_id)
+
+			parseDeferred.done(function(){
+				
+			})
+
+		} else {
+			var eventBritedeferredObj = this.getDetailData(listing_id)
+		
+			eventBritedeferredObj.done(function(){
+				console.log('here comes the deets')
+				boundRender()
+			})
+		}
 	},
 
 	createEvent: function(){
@@ -641,7 +646,7 @@ var freeRouter = Backbone.Router.extend({
 			// alert('both queries finished!')
 			// console.log('res1', res1)
 			// console.log('res2',res2._result[0])
-			var bigArray = res2._result[0]
+			var bigArray = res2._result[0].map(r=>{r.set({source:function(){return 'p'}});return r})
 
 			// console.log(bigArray)
 			self.fc.models.forEach(function(model){
