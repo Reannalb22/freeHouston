@@ -19,6 +19,8 @@ var APP_ID = 'e7jWEAOxt9YSki1VgZJU5OMGsWWDphm7ZRMbgTYS',
 
 Parse.initialize(APP_ID,JS_KEY)
 
+
+
 // var createDate=(datStr,timeStr){
 // var newDate = new Date()
 // dateArray=datStr.split('-')
@@ -29,16 +31,6 @@ Parse.initialize(APP_ID,JS_KEY)
 // },
 
 // myDate = createDate($('.input[type=date]').val())
-
-
-var freeCollection = Backbone.Collection.extend({
-	url:'https://www.eventbriteapi.com/v3/events/search/?venue.city=Houston&price=free',
-	token:'CSHMIFYCN4CU3GOWHR5C',
-	parse: function(responseData){
-		// console.log(responseData)
-		return responseData.events
-	}
-})
 
 var freeModel = Backbone.Model.extend({
 	url : function(){
@@ -51,13 +43,23 @@ var freeModel = Backbone.Model.extend({
 			description: response.description.text,
 			start: response.start.local,
 			end: response.end.local,
-			logo: response.logo.url
+			logo: response.logo ? response.logo.url : null,
+			id: response.id 
 		}
 	},
 
 	token: 'CSHMIFYCN4CU3GOWHR5C'
-
 })
+
+var freeCollection = Backbone.Collection.extend({
+	url:'https://www.eventbriteapi.com/v3/events/search/?venue.city=Houston&price=free',
+	token:'CSHMIFYCN4CU3GOWHR5C',
+	model: freeModel,
+	parse: function(responseData){
+		return responseData.events
+	}
+})
+
 
 
 var HomeView = React.createClass({
@@ -176,14 +178,20 @@ var Event= React.createClass({
 
 	render: function(){
 		console.log(this.props)
-		if(this.props.data.attributes){
-			var id = this.props.data.attributes.id
-			var name = this.props.data.get("name").text
-		}
-		else{
-		 	var id = this.props.data.id
-		 	var name = this.props.data.name.text
-		}
+		// if(this.props.data.attributes){
+		var id
+			if(this.props.data.attributes.id){
+				id = this.props.data.get('id')
+			} else {
+				id = this.props.data.get('objectId')
+			}
+		
+		var name = this.props.data.get("name")
+		// }
+		// else{
+		//  	var id = this.props.data.id
+		//  	var name = this.props.data.name
+		// }
 		return (
 			<div>
 				<p onClick = {this._clickEvent} id={id}>{name}</p>
@@ -276,9 +284,8 @@ var AboutView = React.createClass({
 				</div>
 				<div id="aboutDiv">
 					<h3>Why HTU?</h3>
-					<p>	H-Town Underground is where Houstonians go to find what's happening in Houston, for free. No more guessing, planning, or Googling-- your spur of the moment plans have just been made. 
+					<p>	H-Town Underground is where Houstonians go to find what's happening in Houston, for free. No more guessing, planning, or Googling. Your spur of the moment plans have just been made. 
 					Know of an awesome free event happening in Houston? Giving out freebies? Allowing no cover until a certain time? Sign up to post all of your free Houston events here. 
-					Bonus: H-Town Underground's mission is to get these fantastic freebies out in the open, so your event will post here and on Eventbrite for your convenience. 
 					Get noticed, and get yourself out there, Houston!
 					</p>
 				</div>
@@ -286,6 +293,8 @@ var AboutView = React.createClass({
 		)
 	}
 })
+
+//<p id="vidcred.">Video Credit: Remy Golinelli</p>
 
 
 var SignPop = React.createClass({
@@ -431,7 +440,6 @@ var EventForm = React.createClass({
 						<p>End Date</p>
 						<p>Start Time</p>
 						<p>End Time</p>
-						<p>Capacity</p>
 						<p>Event Description</p>
 					</div>
 
@@ -522,16 +530,16 @@ var freeRouter = Backbone.Router.extend({
 		if (!date){
 
 			var today = new Date()
-			var month = today.getMonth()
+			var month = today.getMonth() + 1
 			var day = today.getDate()
-			if (month.length < 2){
+			if (month.toString().length < 2){
 				var month = '0' + today.getMonth() 
 			}
 
-			if (day.length < 2){
+			if (day.toString().length < 2){
 				var day = '0' + today.getDate()
 			}
-			
+
 			date = today.getFullYear() + "-" + month + "-" + day 
 			}
 		// var Event = Parse.Object.extend("Event");
@@ -628,10 +636,18 @@ var freeRouter = Backbone.Router.extend({
 		var boundRender = this.renderApp.bind(this)
 		var eventBriteDeferred = this.getHomeData()
 		var parseDeferred = this.getParseData()
-		$.when(eventBriteDeferred, parseDeferred).then(function(){
-			alert('both queries finished!')
-			console.log(arguments)
-			window.arguments
+		var self = this
+		$.when(eventBriteDeferred, parseDeferred).then(function(res1,res2){
+			// alert('both queries finished!')
+			// console.log('res1', res1)
+			// console.log('res2',res2._result[0])
+			var bigArray = res2._result[0]
+
+			// console.log(bigArray)
+			self.fc.models.forEach(function(model){
+				bigArray.push(model)
+			})
+			ReactDOM.render(<HomeView events={bigArray}/>, document.querySelector('#container'))
 		})
 	},
 
