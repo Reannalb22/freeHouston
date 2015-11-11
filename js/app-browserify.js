@@ -62,7 +62,7 @@ var HomeView = React.createClass({
 		return <SignPop formState={this.state.formState} />
 	},
 	render: function(){
-console.log('different')
+console.log('different 2')
 		return (
 			<div id="homeView">
 				<NavBar />
