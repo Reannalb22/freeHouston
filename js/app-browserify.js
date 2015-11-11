@@ -39,13 +39,15 @@ var freeModel = Backbone.Model.extend({
 	},
 
 	parse: function(response){
+		console.log(response)
 		return {
 			name: response.name.text,
 			description: response.description.text,
 			start: response.start.local,
 			end: response.end.local,
 			logo: response.logo ? response.logo.url : null,
-			id: response.id 
+			id: response.id,
+			source: function(){return 'ebrite'} 
 		}
 	},
 
@@ -98,7 +100,10 @@ var HomeView = React.createClass({
 var TitleBar = React.createClass({
 	render: function(){
 		return(
-			<h1 className = "animated fadeInUp"> H-Town Underground </h1>
+			<div>
+				<h1 className = "animated fadeInUp"> H-Town Underground </h1>
+				<i className="material-icons">keyboard_arrow_down</i>
+			</div>
 		)
 	}
 })
@@ -128,7 +133,9 @@ var NavBar = React.createClass({
 		return(
 			<div id="navButtons">
 				<div>
+					<i className="material-icons">view_headline</i>
 					<input type = "checkbox" id = "dropButton"></input>
+					
 					<ul id="dropdown-menu">
 				      <li><a href="#home">Home</a></li>
 				      <li><a href="#about">About</a></li>
@@ -141,9 +148,6 @@ var NavBar = React.createClass({
 		)
 	}
 })
-
-//feature to add later
-//<li style={myEventsStyle}><a href="#myCreatedEvents">My Created Events</a></li>
 
 var SearchBar = React.createClass({
 	_searchHandler: function(event){
@@ -161,7 +165,7 @@ var SearchBar = React.createClass({
 	}
 })
 var Event = React.createClass({
-	
+
 	_clickEvent: function(event){
 		var detailClick = event.target,
 			detailId = detailClick.id,//||detailClick.objectId;
@@ -172,20 +176,16 @@ var Event = React.createClass({
 	render: function(){
 		window.pp.push(this.props)
 		console.log(this.props)
-		// if(this.props.data.attributes){
+		
 		var id
 			if(this.props.data.attributes.id){
 				id = this.props.data.get('id')
 			} else {
-				id = this.props.data.id//.get('objectId')
+				id = this.props.data.id
 			}
 		
 		var name = this.props.data.get("name")
-		// }
-		// else{
-		//  	var id = this.props.data.id
-		//  	var name = this.props.data.name
-		// }
+		
 		return (
 			<div>
 				<p onClick = {this._clickEvent} id={id}>{name}</p>
@@ -220,27 +220,40 @@ var DetailsView = React.createClass({
 })
 var Details = React.createClass({
 	render: function(){
+		
 		var name = this.props.event.attributes.name
-	
 		var start = new Date(this.props.event.attributes.start) 
 		var sDate = start.toLocaleDateString()
 		console.log(start)
 		
-		var sTime = start.toLocaleTimeString().replace(':00', '')
-		
-		var end = new Date(this.props.event.attributes.end) 
-		var eDate = end.toLocaleDateString()
-		console.log(end)
+		var timeFormat = function(dateObj){
+			var time = dateObj.toUTCString().split(" ")[4] 
+			//sTime now looks like "18:00:00". I'm going to separate the hours to get 
+			//it out of military time and decide if it's AM or PM
 
+			var hour = time.split(":")[0]
+			var minute = time.split(":")[1]  
+			var ampm = "am"
+			if(hour > 12){
+				hour -= 12
+				ampm = "pm"
+			}
+
+			return hour + ":" + minute +" "+ ampm
+		}
+
+		var end = new Date(this.props.event.attributes.end), 
+			eDate = end.toLocaleDateString(),
+			formattedStart = timeFormat(start),
+			formattedEnd = timeFormat(end)
+		
 		var finalDate
 
 		if (sDate === eDate){
 			finalDate = sDate
 		}
 		else finalDate = `${sDate} to ${eDate}`
-		
-		var eTime = end.toLocaleTimeString().replace(':00', '')
-
+	
 		var description = this.props.event.attributes.description
 		
 		var logo
@@ -254,7 +267,7 @@ var Details = React.createClass({
 				<h3>{name}</h3>
 				<img src = {logo} />
 				<p id="date"><strong>{finalDate} </strong></p>
-				<p id="time"><strong>{sTime} to {eTime} </strong></p>
+				<p id="time"><strong>{formattedStart} to {formattedEnd} </strong></p>
 				<p id="description">{description}</p>
 			</div>
 		)
@@ -272,10 +285,11 @@ var AboutView = React.createClass({
 				</div>
 				<div id="aboutDiv">
 					<h3>Why HTU?</h3>
-					<p>	H-Town Underground is where Houstonians go to find what's happening in Houston, for free. No more guessing, planning, or Googling. Your spur of the moment plans have just been made. 
+					<p id="about">	H-Town Underground is where Houstonians go to find what's happening in Houston, for free. No more guessing, planning, or Googling. Your spur of the moment plans have just been made. 
 					Know of an awesome free event happening in Houston? Giving out freebies? Allowing no cover until a certain time? Sign up to post all of your free Houston events here. 
 					Get noticed, and get yourself out there, Houston!
 					</p>
+					<p id="credit"> Video Credit: Remy Golinelli (RG) </p>
 				</div>
 			</div>
 		)
@@ -291,8 +305,6 @@ var SignPop = React.createClass({
 				<SignBox sendUserInfo={this.props.sendUserInfo}/>
 			</div>
 		)
-				
-				//<SignEventbrite />
 	}
 })
 
@@ -325,18 +337,6 @@ var SignBox = React.createClass({
 					location.hash = "event"
 				})
 			} 
-		// else {
-		//  return newusr.logIn().then(
-		//  	// success callback
-		//  	function(){
-		//  		console.log("logged in!")
-		// 		location.hash = "event"
-		// 	},
-		// 	// fail callback
-		// 	function(result,err){
-		// 		console.log(err)
-		// 	}
-		// )}
 	},
 
 	render: function(){
@@ -349,15 +349,7 @@ var SignBox = React.createClass({
 		)
 	}
 })
-//in order to have user sign themselves into eventbrite... right now I'm using my own account and I'm posting on user's behalf
 
-// var SignEventbrite = React.createClass({
-// 	render: function(){
-// 		return(
-// 				<button><a href='https://www.eventbrite.com/oauth/authorize?response_type=token&client_id=XSX52YKC2DDMNF4D4Q'>Log In with Eventbrite</a></button>
-// 		)
-// 	}
-// })
 var EventView = React.createClass({
 
 	componentWillMount: function(){
@@ -375,14 +367,11 @@ var EventView = React.createClass({
 		)
 	}
 })
-//another feature perhaps to add later
-//<li><a href="#savedEvents">My Saved Events</a></li>
 
 var Greeting = React.createClass({
 	render: function(){
 		return(
 			<div id="greeting">
-				<h3>Hey There, </h3>
 				<p>Let's Create Your Event</p>
 			</div>
 		)
@@ -401,12 +390,13 @@ var EventForm = React.createClass({
 
 			eventToSave.set('username', Parse.User.current().id)
 			eventToSave.set('name', this._eventTitle.getDOMNode().value)
-			eventToSave.set('location', this._eventLocation.getDOMNode().value)
 			eventToSave.set('start', this._eventStartDate.getDOMNode().value + "T" + this._eventStartTime.getDOMNode().value + ":00Z")
 			eventToSave.set('end', this._eventEndDate.getDOMNode().value + "T" + this._eventEndTime.getDOMNode().value + ":00Z")
 			eventToSave.set('description', this._eventDescription.getDOMNode().value)
 
-		eventToSave.save()
+		eventToSave.save().then(location.hash = "home")
+		// alert("Your Event Has Posted!")
+		
 	},
 
 	render: function(){
@@ -415,7 +405,6 @@ var EventForm = React.createClass({
 				<div>
 					<div id="titles">
 						<p>Event Name</p>
-						<p>Location</p>
 						<p>Start Date</p>
 						<p>End Date</p>
 						<p>Start Time</p>
@@ -425,12 +414,11 @@ var EventForm = React.createClass({
 
 					<div id="inputs">
 						<p>  <input ref={(c) => this._eventTitle = c} type="text"></input></p>
-						<p>  <input ref={(c) => this._eventLocation = c} type="text"></input></p>
 						<p>  <input ref={(c) => this._eventStartDate = c} type="date"></input></p> 
 						<p>  <input ref={(c) => this._eventEndDate = c} type="date"></input></p> 
 						<p>  <input ref={(c) => this._eventStartTime = c} type="time"></input></p> 
 						<p>  <input ref={(c) => this._eventEndTime = c} type="time"></input></p>
-						<p>  <textarea ref={(c) => this._eventDescription = c} rows="5"></textarea></p>
+						<p>  <textarea ref={(c) => this._eventDescription = c} rows="5" placeholder="Please include location and other details regarding this event"></textarea></p>
 					</div>
 				</div>
 				
@@ -439,21 +427,6 @@ var EventForm = React.createClass({
 		)}
 	}
 )
-
-// var myCreatedEventView= React.createClass({
-// 	render: function(){
-// 		return(
-// 			<div id="myCreated">
-// 				<NavBar />
-// 				<ListEvents events = {this.props.events} />
-// 			</div>
-// 		)
-// 	}
-// })
-
-
-
-//<li><a href="#event">Create Event</a></li>
 
 
 //-------------------------ROUTER-----------------------
@@ -475,7 +448,6 @@ var freeRouter = Backbone.Router.extend({
 	signup:function (argument) {
 		// body...
 		ReactDOM.render(<HomeView showLogin={true} events={this.fc}/>, document.querySelector('#container'))
-
 	},
 
 	logUserOut: function(){
@@ -521,12 +493,13 @@ var freeRouter = Backbone.Router.extend({
 			}
 
 			date = today.getFullYear() + "-" + month + "-" + day 
-			}
+		}
 		// var Event = Parse.Object.extend("Event");
 		var query = new Parse.Query("Event")
 		query.contains('start',date)
 		return query.find()
 	},
+
 
 	getSearch: function(date){
 		console.log('s')
@@ -542,7 +515,6 @@ var freeRouter = Backbone.Router.extend({
 		newDate.setDate(newDate.getDate()+1)
 		var end = JSON.stringify(newDate);
 
-		// pDeffered=getParseData(date)
 			
 		var deferredObj = this.fc.fetch({
 			data: {
@@ -559,9 +531,19 @@ var freeRouter = Backbone.Router.extend({
 
 	showSearch: function(date){
 		var boundRender = this.renderApp.bind(this)
+		var eventBriteDeferred = this.getSearch(date)
+		var parseDeferred= this.getParseData(date)
 		var self = this
-		var deferredObj = this.getSearch(date)
-		deferredObj.done(boundRender)
+
+		// eventBriteDeferred.done(boundRender)
+		$.when(eventBriteDeferred, parseDeferred).then(function(res1,res2){
+			var bigArray = res2._result[0].map(r=>{r.set({source:function(){return 'p'}});return r})
+			
+			self.fc.models.forEach(function(model){
+				bigArray.push(model)
+			})
+			ReactDOM.render(<HomeView events={bigArray}/>, document.querySelector('#container'))
+		})
 	},
 
 	getAbout: function(){
@@ -598,27 +580,30 @@ var freeRouter = Backbone.Router.extend({
 		return query.find()
 	},
 
-	renderParseDetails: function(){
-		ReactDOM.render(<DetailsView />, document.querySelector('#container'))
+	renderParseDetails: function(results){
+		ReactDOM.render(<DetailsView event={results}/>, document.querySelector('#container'))
 	},
 
-	//set getDetails up like you did getHome
 	getDetails: function(source,listing_id){
-		
-		
-		var boundRender = this.renderDetails.bind(this)
+		var self = this 
 		if (source === 'p'){
+			
+			// var boundRender = this.renderParseDetails.bind(this)
+
 			var parseDeferred = this.getParseDetails(listing_id)
 
-			parseDeferred.done(function(){
-				
+			parseDeferred.done(function(results){
+				self.renderParseDetails(results[0])
 			})
 
 		} else {
+
+			var boundRender = this.renderDetails.bind(this)
+
 			var eventBritedeferredObj = this.getDetailData(listing_id)
 		
 			eventBritedeferredObj.done(function(){
-				console.log('here comes the deets')
+				
 				boundRender()
 			})
 		}
@@ -631,33 +616,25 @@ var freeRouter = Backbone.Router.extend({
 		console.log('rendered event')
 	},
 
-
 	renderApp: function(){
 		ReactDOM.render(<HomeView events={this.fc}/>, document.querySelector('#container'))
 	},
-
 
 	getHome: function(){
 		var boundRender = this.renderApp.bind(this)
 		var eventBriteDeferred = this.getHomeData()
 		var parseDeferred = this.getParseData()
 		var self = this
-		$.when(eventBriteDeferred, parseDeferred).then(function(res1,res2){
-			// alert('both queries finished!')
-			// console.log('res1', res1)
-			// console.log('res2',res2._result[0])
-			var bigArray = res2._result[0].map(r=>{r.set({source:function(){return 'p'}});return r})
 
-			// console.log(bigArray)
+		$.when(eventBriteDeferred, parseDeferred).then(function(res1,res2){
+			var bigArray = res2._result[0].map(r=>{r.set({source:function(){return 'p'}});return r})
+			
 			self.fc.models.forEach(function(model){
 				bigArray.push(model)
 			})
 			ReactDOM.render(<HomeView events={bigArray}/>, document.querySelector('#container'))
 		})
 	},
-
-
-
 
 	initialize: function(){
 		// location.hash = "home"
@@ -668,31 +645,3 @@ var freeRouter = Backbone.Router.extend({
 })
 
 var freebie = new freeRouter
-
-
-// $.ajax({
-// 	url: "https://www.eventbriteapi.com/v3/events/",
-// 	data: {
-// 		        'event.name.html': 'tea_party',
-// 		        'event.start.utc': "2015-11-14T20:00:00Z",
-// 		        'event.end.utc': "2015-11-15T03:00:00Z",
-// 		        'event.start.timezone': 'Africa/Nouakchott',
-// 		        'event.end.timezone': 'Africa/Nouakchott',
-// 		        'event.currency': 'USD',
-// 		        'event.description.html': "let's have a tea party in africa", 
-// 		        'event.listed': true,
-// 		        'event.online_event': true,
-// 		        token: "RFJVFZFYRORRQSOUJG2L"
-// 		    },
-// 	method: "POST",
-// 	headers: {
-// 		"Authorization": "bearer RFJVFZFYRORRQSOUJG2L"
-// 	}
-// }).fail(function(err1,err2){
-// 	console.log(err1)
-// 	console.log(err2)
-// }).done(function(resp){
-// 	console.log(resp)
-// })
-
-// 2015-11-14T20:00:00Z how to format date and time

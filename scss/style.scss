@@ -86,12 +86,19 @@ div#navButtons{
         div{
 
             font-size: 24px;
+            i {
+                position: absolute;
+                font-size: 40px;
+                margin-left:12px;
+                margin-top: 7px;
+            }
             
             input{
                 width: 65px;
                 height:60px;
                 -webkit-appearance: none;
                 background-color: crimson;
+                cursor: pointer;
             }
             ul#dropdown-menu{
                 list-style: none;
@@ -100,7 +107,7 @@ div#navButtons{
                     li {
                         text-align: center;
                         a {
-                            color: black;
+                            color: white;
                             text-decoration: none;
                         }
                     }
@@ -139,13 +146,23 @@ div#navButtons{
         left:0;
         width:100%;
 
-        h1 {
-            color: white;
+        div {
             text-align: center;
-            margin-top: 385px;
-            font-family: 'Bree Serif', serif;
-            // font-family: 'Oleo Script', cursive;
-            font-size: 85px;
+            color: white;
+
+            h1 {
+                color: white;
+                text-align: center;
+                margin-top: 385px;
+                font-family: 'Bree Serif', serif;
+                // font-family: 'Oleo Script', cursive;
+                font-size: 85px;
+            }
+
+            i {
+                font-size: 70px;
+                margin-top: 180px;
+            }
         }
     }
 
@@ -231,7 +248,7 @@ div#aboutview{
             font-family: 'Bree Serif', serif;
         }
 
-        p{
+        p#about{
             margin-top: 40px;
             font-size: 20px;
             transform: translateY(50%);
@@ -241,6 +258,11 @@ div#aboutview{
             background: rgba(0,0,0,0.8);
             padding: 40px;
             line-height: 40px;
+        }
+
+        p#credit{
+            color:white;
+            margin-top: 450px;
         }
     }
 }
@@ -273,7 +295,7 @@ div#eventview {
         div{
             display: flex;
 
-            div {
+            div{
                 display: inline;
                 color: black;
 
@@ -282,14 +304,12 @@ div#eventview {
                     font-family: Palatino,Arial;
                     text-align: left;
                     margin: 1rem 0 0 2rem;
-                    text-indent: 0;
-                    
+                    text-indent: 0;   
                 }
             }
         }
     
     button#signup{
-            border: black;
             margin-top:8px;
             margin-bottom: 14px;
            
@@ -302,27 +322,28 @@ div#detailView {
     background-color: white;
     
     div#details{
-        border: 2px solid black;
         width: 600px;
         margin: auto;
         margin-top: 60px;
         padding: 40px;
         background: crimson;
+        margin-top: 7rem;
+        border: white 2px solid;
         h3{
-            color:black;
+            color:white;
         }
         p#date {
             margin: 20px;
             font-size: 30px;
-            color:black
+            color: white;
         }
         p#time {
             padding: 10px;
             font-size: 22px;
-            color:black
+            color:white;
         }
         p#description{
-            color:black;
+            color:white;
         }
     }
 }
