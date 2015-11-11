@@ -204,7 +204,7 @@ div#navButtons{
         opacity: 1;
         position: fixed;
         top: 380px;
-        background-color: black;
+        background-color: crimson;
         text-align: center;
         box-shadow: 4px 4px 4px 4px #999;
         margin-left: 15%;
@@ -299,6 +299,9 @@ div#eventview {
         div{
             display: flex;
 
+            div#titles{
+                color: white;
+            }
             div{
                 display: inline;
                 color: black;
