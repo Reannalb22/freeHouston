@@ -20,19 +20,6 @@ var APP_ID = 'e7jWEAOxt9YSki1VgZJU5OMGsWWDphm7ZRMbgTYS',
 
 Parse.initialize(APP_ID,JS_KEY)
 
-
-
-// var createDate=(datStr,timeStr){
-// var newDate = new Date()
-// dateArray=datStr.split('-')
-// 		newDate.setFullYear(dateArray[0])
-// 		newDate.setMonth(dateArray[1]-1)
-// 		newDate.setDate(dateArray[2])
-// return newDate
-// },
-
-// myDate = createDate($('.input[type=date]').val())
-
 var freeModel = Backbone.Model.extend({
 	url : function(){
 		return `https://www.eventbriteapi.com/v3/events/${this.get('id')}/`

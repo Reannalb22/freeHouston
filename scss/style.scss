@@ -184,11 +184,15 @@ div#navButtons{
             font-family: Palatino, Arial;
             cursor: pointer;
             color: white;
+            div:hover {
+                background-color: rgba(255,255,255,0.8);
+            }
             div {
                 border: solid white;
                 padding: 2px;
                 text-align: center;
                 margin: 30px;
+            
                 p{
                     margin-top: 35px;
                 }
