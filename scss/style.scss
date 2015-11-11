@@ -65,256 +65,260 @@
  */
 
 img {
-    width: 100%;
+    max-width: 70%;
 }
 /**
  * YOUR CODE HERE
  */
 
-
-#homeView {
-      
-    div#navButtons{
-        background-color: fuchsia;
-        background-color: black;
-        color:white;
-        height: 60px;
-        position: fixed;
-        left:0px;
-        top:0px;
-        width: 100%;
-        text-align: right;
-        z-index: 2;
-            div{
-
-                font-size: 24px;
-                
-                input{
-                    width: 65px;
-                    height:60px;
-                    -webkit-appearance: none;
-                    background-color: crimson;
-                }
-                ul#dropdown-menu{
-                    list-style: none;
-                    position: relative;
-                    opacity: 0;
-                        li {
-                            text-align: center;
-                        }
-                    z-index: 99;
-
-                }
-                input:checked + ul#dropdown-menu {
-
-                    background-color:crimson;
-                    z-index: 2;
-                    opacity: 1;
-                    height: 174px;
-                    margin-top: -14px;
-                    padding: 10px;
-                }
-            }
-
+     
+div#navButtons{
+    background-color: fuchsia;
+    background-color: black;
+    color:white;
+    height: 60px;
+    position: fixed;
+    left:0px;
+    top:0px;
+    width: 100%;
+    text-align: right;
+    z-index: 2;
         div{
-            display: inline-block;
 
-            h5{
-                color:white;
+            font-size: 24px;
+            i {
+                position: absolute;
+                font-size: 40px;
+                margin-left:12px;
+                margin-top: 7px;
+            }
+            
+            input{
+                width: 65px;
+                height:60px;
+                -webkit-appearance: none;
+                background-color: crimson;
+                cursor: pointer;
+            }
+            ul#dropdown-menu{
+                list-style: none;
+                position: relative;
+                opacity: 0;
+                    li {
+                        text-align: center;
+                        a {
+                            color: white;
+                            text-decoration: none;
+                        }
+                    }
+                z-index: 99;
+
+            }
+            input:checked + ul#dropdown-menu {
+
+                background-color:crimson;
+                z-index: 2;
+                opacity: 1;
+                margin-top: -14px;
+                padding: 10px;
             }
         }
-    }
 
+    div{
+        display: inline-block;
+
+        h5{
+            color:white;
+        }
+    }
+}
+
+#homeView {
     div#titleBar{
-        height: 1000px;
-        background-color: khaki;
+        height: 100%;
+        background: url(./images/freeHouston_vid/sun.png) no-repeat center center fixed;
+        background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
         position: fixed;
         top:60px;
         left:0;
         width:100%;
 
-        h1 {
+        div {
             text-align: center;
-            transform: translateY(200%);
-            font-family: 'Oleo Script', cursive;
-            font-size: 85px;
+            color: white;
+
+            h1 {
+                color: white;
+                text-align: center;
+                margin-top: 385px;
+                font-family: 'Bree Serif', serif;
+                // font-family: 'Oleo Script', cursive;
+                font-size: 85px;
+            }
+
+            i {
+                font-size: 70px;
+                margin-top: 180px;
+            }
         }
     }
+
 
     div#eventContent{
         margin-top: 1000px;
         position: relative;
-        background-color: cadetblue;
+        background-color: black;
         text-align: center;
 
         input {
             width: 263.9px;
             height:50px;
+            text-align: center;
         }
 
-        div{
+        div#listEvent{
             font-size: 25px;
             font-family: Palatino, Arial;
+            cursor: pointer;
+            color: white;
+            div:hover {
+                background-color: crimson;
+            }
             div {
-                border: dashed lightgray;
+                border: solid white;
                 padding: 2px;
                 text-align: center;
                 margin: 30px;
+            
+                p{
+                    margin-top: 35px;
+                }
             }
         }
     }
 
     div#signView {
-            opacity: 1;
-            position: absolute;
-            top: 380px;
-            background-color: lightgoldenrodyellow;
-            text-align: center;
-            div#buttons {
-                button#signup{
-                    display: block;
-                    margin-left: 95px;
+        opacity: 1;
+        position: fixed;
+        top: 380px;
+        background-color: crimson;
+        text-align: center;
+        box-shadow: 4px 4px 4px 4px #999;
+        margin-left: 15%;
+        width: 70%;
+        h3 {
+            color:white;
+        }
+        div {
+            p {
+                text-indent: 0;
+                margin-top: -0.5em;
+                color: white;
+                input {
+                    color: black;
                 }
             }
+            
+            button#signup{
+                display: block;
+                margin-left: 45%;
+            }
         }
+    }
 }
 
 div#aboutview{
-    background-color: khaki;
     text-align: center;
-    height: 890px;
     
-    div#navButtons{
-        background-color: black;
-        color:white;
-        height: 60px;
-        position: fixed;
-        left:0px;
-        top:0px;
-        width: 100%;
-        text-align: right;
-        z-index: 2;
-            div{
+    div#movieDiv{
+        position: absolute;
+        z-index: -100;
+        height: 110vh;
+        overflow: hidden;
+    }
 
-                font-size: 24px;
-                
-                input{
-                    width: 65px;
-                    height:60px;
-                    -webkit-appearance: none;
-                    background-color: crimson;
-                }
-                ul#dropdown-menu{
-                    list-style: none;
-                    position: relative;
-                    opacity: 0;
-                        li {
-                            text-align: center;
-                        }
-                    z-index: 99;
+    div#aboutDiv{
+        width: 700px;
+        margin: -110px auto;
 
-                }
-                input:checked + ul#dropdown-menu {
-
-                    background-color:crimson;
-                    z-index: 2;
-                    opacity: 1;
-                    height: 174px;
-                    margin-top: -14px;
-                    padding: 10px;
-                }
-            }
-
-        div{
-            display: inline-block;
+        h3{
+            margin-top: 60px;
+            transform:translateY(200%);
+            color: white;
+            font-size: 70px;
+            font-family: 'Bree Serif', serif;
         }
-    }
 
-    h3{
-        margin-top: 60px;
-    }
+        p#about{
+            margin-top: 40px;
+            font-size: 20px;
+            transform: translateY(50%);
+            color: white; 
+            font-family: 'Bree Serif', serif;
+            border: 1px solid;
+            background: rgba(0,0,0,0.8);
+            padding: 40px;
+            line-height: 40px;
+        }
 
-    p#firstpara{
-        margin-top: 40px;
-    }
-
-    p{
-        font-size: 20px; 
+        p#credit{
+            color:white;
+            margin-top: 450px;
+        }
     }
 }
 
 div#eventview {
-    background-color: khaki; 
-    height: 1050px;
-    div#navButtons{
-        background-color: black;
-        color:white;
-        height: 60px;
-        position: fixed;
-        left:0px;
-        top:0px;
-        width: 100%;
-        text-align: right;
-        z-index: 2;
-            div{
-
-                font-size: 24px;
-                
-                input{
-                    width: 65px;
-                    height:60px;
-                    -webkit-appearance: none;
-                    background-color: crimson;
-                }
-                ul#dropdown-menu{
-                    list-style: none;
-                    position: relative;
-                    opacity: 0;
-                        li {
-                            text-align: center;
-                        }
-                    z-index: 99;
-
-                }
-                input:checked + ul#dropdown-menu {
-
-                    background-color:crimson;
-                    z-index: 2;
-                    opacity: 1;
-                    height: 174px;
-                    margin-top: -14px;
-                    padding: 10px;
-                }
-            }
-        div{
-            display: inline-block;
-        }
-    }
+    background-color: white; 
 
     div#greeting{
         margin-top: 60px;
         padding: 20px;
         h3{
-            font-family: 'Oleo Script', cursive;
+            font-family: 'Bree Serif', serif;
         }
         p {
-            font-size: 30px;
+            font-size: 60px;
             text-align: center;
-            font-family: Palatino, Arial;
+            font-family: 'Bree Serif', serif;
+            margin: 0;
+            color: black;
         }
     }
 
     div#eventform{
+        border: white 2px solid;
+        width: 500px;
+        margin: auto;
         text-align: center;
-        p{
-            margin: 50px;
-            font-size: 20px;
-            font-family: Palatino,Arial;
-            text-align: left;
+        background: crimson;
+       
+        div{
+            display: flex;
+
+            div#titles{
+                color: white;
+            }
+            div{
+                display: inline;
+                color: black;
+
+                p {
+                    font-size: 20px;
+                    font-family: Palatino,Arial;
+                    text-align: left;
+                    margin: 1rem 0 0 2rem;
+                    text-indent: 0;   
+                }
+            }
         }
     
     button#signup{
-            border: black;
+            margin-top:8px;
+            margin-bottom: 14px;
            
         }
     }
@@ -322,87 +326,37 @@ div#eventview {
 
 div#detailView {
     text-align: center;
-    background-color: khaki;
-    height: 900px;
+    background-color: white;
     
     div#details{
+        width: 600px;
+        margin: auto;
         margin-top: 60px;
         padding: 40px;
+        background: crimson;
+        margin-top: 7rem;
+        border: white 2px solid;
+        h3{
+            color:white;
+        }
         p#date {
             margin: 20px;
-            font-size: 25px;
+            font-size: 30px;
+            color: white;
         }
-        p#url{
-            margin: 20px;
+        p#time {
+            padding: 10px;
+            font-size: 22px;
+            color:white;
         }
-    }
-    
-    div#navButtons{
-        background-color: black;
-        color:white;
-        height: 60px;
-        position: fixed;
-        left:0px;
-        top:0px;
-        width: 100%;
-        text-align: right;
-        z-index: 2;
-            div{
-
-                font-size: 24px;
-                
-                input{
-                    width: 65px;
-                    height:60px;
-                    -webkit-appearance: none;
-                    background-color: crimson;
-                }
-                ul#dropdown-menu{
-                    list-style: none;
-                    position: relative;
-                    opacity: 0;
-                        li {
-                            text-align: center;
-                        }
-                    z-index: 99;
-
-                }
-                input:checked + ul#dropdown-menu {
-
-                    background-color:crimson;
-                    z-index: 2;
-                    opacity: 1;
-                    height: 174px;
-                    margin-top: -14px;
-                    padding: 10px;
-                }
-            }
-        div{
-            display: inline-block;
+        p#description{
+            color:white;
         }
     }
 }
+    
 
 
-// .fade-leave {
-//   opacity: 1;
-// }
-// .fade-leave.fade-leave-active {
-//   opacity: 0.01;
-//   transition: opacity .1s ease-in;
-// }
- 
-// .fade-enter {
-//   opacity: 0.01;
-// }
-// .fade-enter.fade-enter-active {
-//   opacity: 1;
-//   transition: opacity .2s ease-in;
-// }
- 
-// .fade-height {
-//   transition: height .15s ease-in-out;
-// }
 
 
 
