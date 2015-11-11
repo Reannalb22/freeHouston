@@ -135,7 +135,6 @@ var NavBar = React.createClass({
 		)
 	}
 })
-
 var SearchBar = React.createClass({
 	_searchHandler: function(event){
 		{
@@ -294,7 +293,6 @@ var SignPop = React.createClass({
 		)
 	}
 })
-
 var SignBox = React.createClass({
 	_handleUserData: function(event){
 		console.log(this.refs)
@@ -336,7 +334,6 @@ var SignBox = React.createClass({
 		)
 	}
 })
-
 var EventView = React.createClass({
 
 	componentWillMount: function(){
@@ -354,7 +351,6 @@ var EventView = React.createClass({
 		)
 	}
 })
-
 var Greeting = React.createClass({
 	render: function(){
 		return(
@@ -411,9 +407,9 @@ var EventForm = React.createClass({
 				
 				<button onClick={this._handleUserData} id="signup">Submit Event</button>
 			</div>
-		)}
+		)
 	}
-)
+})
 
 
 //-------------------------ROUTER-----------------------
@@ -423,16 +419,14 @@ var freeRouter = Backbone.Router.extend({
 		
 		'details/:source/:listing_id':'getDetails',
 		'logout':'logUserOut',
-		// 'myCreatedEvents':'showMyEvents',
 		'event':'createEvent',
 		'about': 'getAbout',
 		'search/:date': 'showSearch',
 		'home':'getHome',
-		sign:'signup'
-		
+		sign:'signup'	
 	},
 
-	signup:function (argument) {
+	signup:function (argument){
 		// body...
 		ReactDOM.render(<HomeView showLogin={true} events={this.fc}/>, document.querySelector('#container'))
 	},
@@ -624,7 +618,7 @@ var freeRouter = Backbone.Router.extend({
 	},
 
 	initialize: function(){
-		// location.hash = "home"
+		location.hash = "home"
 		this.fc = new freeCollection()
 		this.fm = new freeModel()
 		Backbone.history.start()
