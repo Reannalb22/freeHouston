@@ -161,7 +161,7 @@ div#navButtons{
 
             i {
                 font-size: 70px;
-                margin-top: 180px;
+                margin-top: 280px;
             }
         }
     }
@@ -236,7 +236,7 @@ div#aboutview{
     div#movieDiv{
         position: absolute;
         z-index: -100;
-        height: 110vh;
+        height: 100vh;
         overflow: hidden;
     }
 
@@ -245,7 +245,7 @@ div#aboutview{
         margin: -110px auto;
 
         h3{
-            margin-top: 60px;
+            margin-top: 145px;
             transform:translateY(200%);
             color: white;
             font-size: 70px;
@@ -266,7 +266,8 @@ div#aboutview{
 
         p#credit{
             color:white;
-            margin-top: 450px;
+            margin-top: 440px;
+            text-indent: 0px;
         }
     }
 }
